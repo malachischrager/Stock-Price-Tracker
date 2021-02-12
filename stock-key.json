@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "stock-price-tracker-a2e8a",
+  "private_key_id": "b912b9eb8af6ce90520d2e0190ecc54175290123",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDg09MjdaliXIyU\n7/DM7vVAXcafi3W6GKS2z119t8FmVb0SBbJxvYXB7ie/TMWzmlfw+ldIp29nHeI2\nDOIFMnGGLbflpItJ5ZeFq/R6t1Xhms1IzVTOm8ZbZKMe1PKD1Mrmba7QdWqkI2WL\ndLtChdGe8XNdLzw0zu1N6rIWXX21q8Df0KdhcFtxLsbjMl/Ypj1UT90tFwp8l6Ym\n41XAUbybVmQobEFONxXdJX4DAwf/BpUo0jPy57VC97LHNa0b1M/Hh39FsG662aCk\nDiUtiHSQ9QGwBCmJru/Pru4p+tcrCsBgIjYFXVlgEPQ5b3PmBqz+/mhT0L3VonhM\nnuVcmCSRAgMBAAECggEAA6ieznxrMb0U0pWnAwa+efosscr4svsUrx7nxBR58rrh\ndUofccdmRlYkUnIi433XAYZpZjbHUtPDKyMBiJkeDNNwoy2O0LiKQzQdqeOS47V7\nsrwYrbYOP81+9BD+E1QiqyZMynqmrh4fWGohY/8+fooqWPFcVvWpGfQASunhklO9\n40u8r+hYkz82SdYBl+Jt6TCUd2JBmd9p4oQ3TmRKJchqM5dSbWAohtJhDyEQafyw\nMU5p1Bv8xNqpnYFgPDZhaj8r2C6QqBDEP8FfRMxJs/OQy3sq2IXgan7grq5IEZmB\nW4f1JzdO7lqmMeWevhZxGrVz6Rx53A9aEe82WY5lYwKBgQD32IUxZGSl+tbTyAJx\nMZK3Ojw0xrQJJOQzEDdVA02ZHEruH8a5Gr3l7+yArLqweRt0HVzlS7pzq5HZhd43\n/GZjtt203zJ6yMdM7J/FA3ydNEpIe8+iCPv3SekB9NFUidD6UrzRfz0IL9bN8+Vo\nehj1mB+8LO4bCCcvdAkHjkLYGwKBgQDoOW7AIBVQgROHzEOh3etd3fMYYtpOuUXP\nhRCfBGeBNqiRwbW66+vy14WXFD4hQynbEzvn6VnuskxpejuOL3xvCPYZxJvBoFt2\nhEYp3/sojqZ2s8tQfQuPLT+y8dceFSVhd8bsdqcu0vQL+fjJ12vPXpMm6mxN8NYb\nh765fvEYwwKBgDaRMDoArXwxruyvw4HidTfsFWdVPDwrKCbp8hTAhmwoY4Lr8he9\nAIRIf5yQ6wWBlH7LHDHLq4BeDN2EcLmI044uq79vyLBp1h9klYSN0PjXk2dEAyHc\nsoTue+OXYCMpuJ30a2gAiJJt3fA4O5D2GNqxpIMMrVu8Psxe0sIcGzFzAoGAfqt1\nQc8+UR9XK+e7rHuEezsp8s9ZDT/6WGvY2SRp4Q2TfY4QNtmhZmExOWuNSE9+cUVY\nk/OxXoZbL93AxpoYYeiddQjNfRyfR1J3gzfto/3Lx0vjRxAuUfb4m/9Wu84FCdlv\n5GQEZYIkJLRBhLfA0uhflAai9RC9eV7eJgicMkkCgYAXU0soCWhPbeOJi/0eSEZ6\nvANWUkytB/D2k1/7qAeeLJMkfTU+9m4eLSYyY3YtWtZeOGnpNhQgjWg+z6+dWXmu\nf8zMRxutIoDG4QYC5hsGuBYV0doszg+7CKlkeO797D95P3yAzf3Pm/lgO9AsVUP7\n7ICxVpFQu0YqezgQG/L4+A==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-ldqkq@stock-price-tracker-a2e8a.iam.gserviceaccount.com",
+  "client_id": "102195775959140941626",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-ldqkq%40stock-price-tracker-a2e8a.iam.gserviceaccount.com"
+}
