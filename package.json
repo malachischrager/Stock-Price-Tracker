@@ -18,6 +18,7 @@
   "homepage": "https://github.com/malachischrager/Stock-Price-Tracker#readme",
   "dependencies": {
     "@firebase/firestore": "^2.1.6",
+    "alphavantage": "^2.2.0",
     "firebase": "^8.2.7",
     "firebase-admin": "^9.5.0"
   }
