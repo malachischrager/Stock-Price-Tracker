@@ -51,4 +51,32 @@ async function pointsWithProfit(dailyOHLC, rsis, profitThreshold, numCandles, rs
   console.log(answers);
 }
 
-module.exports = {pointsWithProfit};
+async function initRSI(dailyOHLC, rsi){
+  const TIME_PERIODS = 14;
+  if((Object.keys(dailyOHLC)).length >= TIME_PERIODS){
+    let OHLCTimestamp = Object.keys(dailyOHLC);
+    let OHLCValue = Object.values(dailyOHLC);
+    let totalGain = 0;
+    let totalLoss = 0;
+    for(let i = 0; i < TIME_PERIODS; ++i){
+      let open = OHLCValue[i]['1. open'];
+      let close = OHLCValue[i]['4. close'];
+      if(open <= close){
+        totalGain += close - open;
+      }
+      else{
+        totalLoss += open - close;
+      }
+    }
+    let averageGain = totalGain/TIME_PERIODS;
+    let averageLoss = totalLoss/TIME_PERIODS;
+    let firstRSI = 100 - (100 / (1 + (averageGain/averageLoss)));
+    console.log(firstRSI);
+    rsi.push(firstRSI);
+  }
+}
+
+module.exports = {
+  pointsWithProfit,
+  initRSI
+};

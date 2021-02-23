@@ -1,13 +1,14 @@
 const admin = require('firebase-admin');
 const serviceAccount = require('./stock-key.json');
 const alpha = require('alphavantage')({ key: 'SRAGEGTDQSII8BQG' });
-const {pointsWithProfit} = require('./functions');
+const { pointsWithProfit, initRSI } = require('./functions');
 
 admin.initializeApp({credential: admin.credential.cert(serviceAccount)});
 
 const db = admin.firestore();
 
 async function run(){
+  // ALPHA VANTAGE RSI FETCHING
   try{
     rsi_data = await alpha.technical.rsi('GME', '1min', 14, 'open');
   }
@@ -22,11 +23,13 @@ async function run(){
     console.error(error);
   }
 
-  const rsi = rsi_data['Technical Analysis: RSI'];
+  const old_rsi = rsi_data['Technical Analysis: RSI'];
   const intra = intra_data['Time Series (1min)'];
+  const rsi = [];
+  await initRSI(intra, rsi);
   console.log(intra_data);
   modded_rsi = Object.fromEntries(
-    Object.entries(rsi).slice(1, 650)
+    Object.entries(old_rsi).slice(1, 650)
   )
 
 
