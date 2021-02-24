@@ -52,12 +52,11 @@ async function pointsWithProfit(dailyOHLC, rsis, profitThreshold, numCandles, rs
 }
 
 // Currently Broken:
-// API doesn't return values with consecutive time periods
-// The dailyOHLC map is reverse-chronological order
+// API doesn't return values with consecutive time periods for after hours
 async function initRSI(dailyOHLC, rsi){
   const TIME_PERIODS = 14;
-  let OHLCTimestamp = Object.keys(dailyOHLC);
-  let OHLCValue = Object.values(dailyOHLC);
+  let OHLCTimestamp = Object.keys(dailyOHLC).reverse();
+  let OHLCValue = Object.values(dailyOHLC).reverse();
   let averageGain, averageLoss;
   if((Object.keys(dailyOHLC)).length > TIME_PERIODS){
     let totalGain = 0;
@@ -100,7 +99,6 @@ async function calculateRSI(rsi, OHLCTimestamp, OHLCValue, averageGain, averageL
     let currRSI = 100 - (100/ (1 + (averageGain/averageLoss)));
     rsi[OHLCTimestamp[currIndex]] = currRSI;
     currIndex++;
-    // console.log(rsi);
   }
 }
 

@@ -29,6 +29,7 @@ async function run(){
   await initRSI(intra, rsi);
   // console.log(intra_data);
   // console.log(old_rsi)
+  // console.log(rsi);
   modded_rsi = Object.fromEntries(
     Object.entries(old_rsi).slice(1, 650)
   )
