@@ -25,9 +25,11 @@ async function run(){
 
   const old_rsi = rsi_data['Technical Analysis: RSI'];
   const intra = intra_data['Time Series (1min)'];
-  const rsi = [];
+  const rsi = {};
   await initRSI(intra, rsi);
-  console.log(intra_data);
+  // console.log(intra_data);
+  // console.log(old_rsi)
+  // console.log(rsi);
   modded_rsi = Object.fromEntries(
     Object.entries(old_rsi).slice(1, 650)
   )

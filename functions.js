@@ -51,28 +51,54 @@ async function pointsWithProfit(dailyOHLC, rsis, profitThreshold, numCandles, rs
   console.log(answers);
 }
 
+// Currently Broken:
+// API doesn't return values with consecutive time periods for after hours
 async function initRSI(dailyOHLC, rsi){
   const TIME_PERIODS = 14;
-  if((Object.keys(dailyOHLC)).length >= TIME_PERIODS){
-    let OHLCTimestamp = Object.keys(dailyOHLC);
-    let OHLCValue = Object.values(dailyOHLC);
+  let OHLCTimestamp = Object.keys(dailyOHLC).reverse();
+  let OHLCValue = Object.values(dailyOHLC).reverse();
+  let averageGain, averageLoss;
+  if((Object.keys(dailyOHLC)).length > TIME_PERIODS){
     let totalGain = 0;
     let totalLoss = 0;
-    for(let i = 0; i < TIME_PERIODS; ++i){
-      let open = OHLCValue[i]['1. open'];
-      let close = OHLCValue[i]['4. close'];
-      if(open <= close){
-        totalGain += close - open;
+    let close = 0;
+    let previousClose = 0;
+    for(let i = 1; i <= TIME_PERIODS; ++i){
+      previousClose = OHLCValue[i-1]['4. close'];
+      close = OHLCValue[i]['4. close'];
+      if(previousClose <= close){
+        totalGain += close - previousClose;
       }
       else{
-        totalLoss += open - close;
+        totalLoss += previousClose - close;
       }
     }
-    let averageGain = totalGain/TIME_PERIODS;
-    let averageLoss = totalLoss/TIME_PERIODS;
+    averageGain = totalGain/TIME_PERIODS;
+    averageLoss = totalLoss/TIME_PERIODS;
     let firstRSI = 100 - (100 / (1 + (averageGain/averageLoss)));
-    console.log(firstRSI);
-    rsi.push(firstRSI);
+    rsi[OHLCTimestamp[TIME_PERIODS]] = firstRSI;
+    await calculateRSI(rsi, OHLCTimestamp, OHLCValue, averageGain, averageLoss, TIME_PERIODS);
+  }
+}
+
+async function calculateRSI(rsi, OHLCTimestamp, OHLCValue, averageGain, averageLoss, TIME_PERIODS){
+  let currIndex = TIME_PERIODS + 1;
+  while(currIndex < (Object.keys(OHLCTimestamp)).length){
+    let previousClose = OHLCValue[currIndex - 1]['4. close'];
+    let close = OHLCValue[currIndex]['4. close'];
+    if(previousClose <= close){
+      let totalGain = averageGain*13 + (close - previousClose);
+      averageGain = totalGain/14;
+      averageLoss = averageLoss*13/14;
+    }
+    else {
+      let totalLoss = averageLoss*13 + (previousClose - close);
+      averageLoss = totalLoss/14;
+      averageGain = averageGain*13/14;
+    }
+    let currRSI = 100 - (100/ (1 + (averageGain/averageLoss)));
+    rsi[OHLCTimestamp[currIndex]] = currRSI;
+    currIndex++;
   }
 }
 
