@@ -1,7 +1,7 @@
 // npm run test or npm run test test/pointwithProfit.test.js
 // to run locally do npm install chai
 
-var expect = require("chai").expect;
+//var expect = require("chai").expect;
 const assert = require('assert');
 const {probOfProfit} = require('../functions');
 const { pointsWithProfitRSIOverRange, pointsWithProfitRSIOverandMACD, pointsWithProfitRSIUnderRange, pointsWithProfitRSIUnderandMACD} = require('../functions');
