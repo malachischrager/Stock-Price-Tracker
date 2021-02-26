@@ -1,5 +1,6 @@
 const alpha = require('alphavantage')({ key: 'SRAGEGTDQSII8BQG' });
 const MACD = require('technicalindicators').MACD;
+const RSI = require('technicalindicators').RSI;
 
 async function ema(symbol, interval){
   let ema_data = null;
@@ -38,8 +39,30 @@ async function macd(symbol, interval){
 
 }
 
+// return rsi for given values
+// assuming we have over 14 valid data points
+async function rsi(dailyValue, rsiData){
+  // getting close value for market hours
+  let intraday = parseMarketHours(dailyValue);
+  let intradayTimestamp = Object.keys(intraday).reverse();
+  let intradayValue = Object.values(intraday).reverse();
+  let intradayClose = []
+  for(let i = 0; i < intradayTimestamp.length; ++i){
+    intradayClose.push(intradayValue[i]['4. close']);
+  }
+  // calculating rsi for market values
+  let inputRSI = {
+    values : intradayClose,
+    period : 14
+  };
+  rsiValue = RSI.calculate(inputRSI);
+  for(let i = 14; i < intradayTimestamp.length; ++i){
+    rsiData[intradayTimestamp[i]] = rsiValue[i-14];
+  }
+}
+
 // dataType is
-function parseMarketHours(data, dataType){
+function parseMarketHours(data){
   timestamps = Object.keys(data);
   data = Object.entries(data);
 
@@ -64,11 +87,11 @@ function parseMarketHours(data, dataType){
 
     // if time is between open and close, add numerical value to parsedArray
     if(date.getTime() < close_time.getTime()){
-      parsedDict[time] = parseFloat(value[dataType]);
+      parsedDict[time] = value;
     }
   }
 
   //console.log(parsedDict);
   return parsedDict;
 }
-module.exports = {ema, macd};
+module.exports = {ema, macd, rsi};
