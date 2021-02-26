@@ -284,7 +284,7 @@ describe('points with profit RSI under range should return a probability', () =>
             { timestamp: '2021-02-25 10:16:00', profit: true, profitValue: 0.25 },
             { timestamp: '2021-02-25 14:03:00', profit: false, profitValue: 0 }
           ]);
-          console.log("Probability is: " + prob);
+
           assert.notEqual(prob, 0);
     });
 });
