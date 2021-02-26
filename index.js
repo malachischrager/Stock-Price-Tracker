@@ -1,19 +1,14 @@
 const admin = require('firebase-admin');
 const serviceAccount = require('./stock-key.json');
 const alpha = require('alphavantage')({ key: 'SRAGEGTDQSII8BQG' });
-<<<<<<< Updated upstream
 const { pointsWithProfit, initRSI } = require('./functions');
-=======
-const {pointsWithProfit} = require('./functions');
 const indicators = require('./indicators');
->>>>>>> Stashed changes
 
 admin.initializeApp({credential: admin.credential.cert(serviceAccount)});
 
 const db = admin.firestore();
 
 async function run(){
-<<<<<<< Updated upstream
   // ALPHA VANTAGE RSI FETCHING
   try{
     rsi_data = await alpha.technical.rsi('GME', '1min', 14, 'open');
@@ -42,35 +37,8 @@ async function run(){
 
 
   pointsWithProfit(intra, modded_rsi, 0.03, 20, 50);
-=======
-  // try{
-  //   rsi_data = await alpha.technical.rsi('GME', '1min', 14, 'open');
-  // }
-  // catch(error){
-  //   console.error(error);
-  // }
-  //
-  // try{
-  //   intra_data = await alpha.data.intraday('GME', 'full');
-  // }
-  // catch(error){
-  //   console.error(error);
-  // }
-  //
-  // const rsi = rsi_data['Technical Analysis: RSI'];
-  // const intra = intra_data['Time Series (1min)'];
-  // //console.log(intra_data);
-  // modded_rsi = Object.fromEntries(
-  //   Object.entries(rsi).slice(1, 650)
-  // )
-
-  // const ema_data = await indicators.ema('GME', '1min', 20, 'open');
-  // console.log(ema_data);
 
   await indicators.macd('GME', '1min');
-  //pointsWithProfit(intra, modded_rsi, 0.03, 20, 50);
->>>>>>> Stashed changes
-
 // DO NOT DELETE || FIREBASE STUFF
 //   const docRef = db.collection('stocks').doc('GME');
 //   await docRef.set({
