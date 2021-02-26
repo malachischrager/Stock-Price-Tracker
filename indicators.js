@@ -2,6 +2,29 @@ const alpha = require('alphavantage')({ key: 'SRAGEGTDQSII8BQG' });
 const MACD = require('technicalindicators').MACD;
 const RSI = require('technicalindicators').RSI;
 
+async function getData(symbol, interval){
+  let ema_data = await ema(symbol, interval);
+  ema_data = Object.entries(ema_data).reverse();
+  console.log(ema_data);
+
+  let macd_data = await macd(ema_data);
+  // ema_data = Object.entries(ema_data);
+  // let data = {};
+  // count = 0;
+  // //console.log(macd_data);
+  // // console.log(Object.keys(ema_data).length, macd_data.length);
+  // // console.log(ema_data);
+  // for (const [time, value] of ema_data){
+  //   if(count >= 24){
+  //     data[time] = {macd: macd_data[count-24]};
+  //   }
+  //   else{
+  //     data[time] = {macd: undefined}
+  //   }
+  //   count += 1;
+  // }
+  // console.log(data);
+}
 async function ema(symbol, interval){
   let ema_data = null;
   try{
@@ -12,14 +35,12 @@ async function ema(symbol, interval){
   }
   // timestamps = Object.keys(ema_data);
   // console.log(typeof timestamps[1]);
-  //return ema_data;
-  ema_data = await parseMarketHours(ema_data['Technical Analysis: EMA'], 'EMA');
+  // return ema_data;
+  ema_data = await parseMarketHours(ema_data['Technical Analysis: EMA']);
   return ema_data;
 }
 
-async function macd(symbol, interval){
-  let ema_data = await ema(symbol, interval);
-
+async function macd(ema_data){
   // grab just ema and exclude timestamp
   let pure_ema = Object.values(ema_data);
 
@@ -35,8 +56,8 @@ async function macd(symbol, interval){
   // macd_data has MACD, signal, and histogram data
   // if histogram value is positive, it is buy signal and vice versa
   let macd_data = await MACD.calculate(macdInput);
-  console.log(macd_data);
 
+  return macd_data;
 }
 
 // return rsi for given values
@@ -84,7 +105,6 @@ function parseMarketHours(data){
     if(date.getTime() < open_time.getTime()){
       break;
     }
-
     // if time is between open and close, add numerical value to parsedArray
     if(date.getTime() < close_time.getTime()){
       parsedDict[time] = value;
