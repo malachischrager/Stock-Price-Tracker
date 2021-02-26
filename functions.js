@@ -1,4 +1,19 @@
+async function probOfProfit(results){
+  profits = 0;
+  losses = 0;
+  for(i=0; i<results.length; i++){
+    data_point = results[i];
+    if(data_point.profit){
+      profits += 1;
+    }
+    else{
+      losses += 1;
+    }
+  }
 
+  prob = (profits)/(profits+losses)*100;
+  console.log(profits, losses, results.length, prob);
+}
 
 async function pointsWithProfit(dailyOHLC, rsis, profitThreshold, numCandles, rsiHighRange){
   var answers = [];
@@ -48,7 +63,8 @@ async function pointsWithProfit(dailyOHLC, rsis, profitThreshold, numCandles, rs
       }
     }
   }
-  console.log(answers);
+  //console.log(answers);
+  probOfProfit(answers);
 }
 
 // Currently Broken:
