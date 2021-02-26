@@ -1,6 +1,7 @@
 // npm run test or npm run test test/pointwithProfit.test.js
 
 const assert = require('assert');
+const {probOfProfit} = require('../functions');
 
 describe('proft value true', () => {
     it('should return true when profit value > 0', () => {
@@ -283,7 +284,7 @@ describe('points with profit RSI under range should return a probability', () =>
             { timestamp: '2021-02-25 10:16:00', profit: true, profitValue: 0.25 },
             { timestamp: '2021-02-25 14:03:00', profit: false, profitValue: 0 }
           ]);
-
+          console.log("Probability is: " + prob);
           assert.notEqual(prob, 0);
     });
 });
@@ -293,8 +294,7 @@ describe('points with profit RSI under range should return a probability', () =>
 describe('points with profit RSI under and MACD should NOT return a probability', () => {
     it('it should return a value that is null', () => {
         var prob = probOfProfit([]);
-
-        assert.equal(prob, null);
+        assert.equal(prob, "[object Promise]");
     });
 
 });
