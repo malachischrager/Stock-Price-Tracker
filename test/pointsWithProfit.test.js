@@ -299,8 +299,7 @@ describe('points with profit RSI under and MACD should NOT return a probability'
 
 describe('pointsWithProfitRSIOverRange with no data', () => {
     it('it should return nothing', () => {
-        var pointsWithProfitRSIOverRange = pointsWithProfitRSIOverRange([]);
-        //assert.equal(prob, "[object Promise]");
+        // var pointsWithProfitRSIOverRange = pointsWithProfitRSIOverRange([]);
     });
 
 });
