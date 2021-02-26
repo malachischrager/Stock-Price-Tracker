@@ -19,10 +19,16 @@
   "dependencies": {
     "@firebase/firestore": "^2.1.6",
     "alphavantage": "^2.2.0",
+    "datetime": "0.0.3",
     "firebase": "^8.2.7",
+<<<<<<< Updated upstream
     "firebase-admin": "^9.5.0"
   },
   "devDependencies": {
     "mocha": "^8.3.0"
+=======
+    "firebase-admin": "^9.5.0",
+    "technicalindicators": "^3.1.0"
+>>>>>>> Stashed changes
   }
 }
