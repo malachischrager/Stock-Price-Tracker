@@ -13,6 +13,7 @@ async function probOfProfit(results){
 
   prob = (profits)/(profits+losses)*100;
   console.log(profits, losses, results.length, prob);
+  return prob;
 }
 
 async function pointsWithProfitRSIOverRange(data, profitThreshold, numCandles, rsiHighRange){
@@ -145,6 +146,7 @@ async function pointsWithProfitRSIUnderRange(data, profitThreshold, numCandles, 
 
 
 module.exports = {
+  probOfProfit,
   pointsWithProfitRSIOverRange,
   pointsWithProfitRSIOverandMACD,
   pointsWithProfitRSIUnderRange,
