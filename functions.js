@@ -1,4 +1,4 @@
-async function probOfProfit(results){
+function probOfProfit(results){
   profits = 0;
   losses = 0;
   for(i=0; i<results.length; i++){
