@@ -1,3 +1,8 @@
+/*--------------------------------------------------------------
+This file contains tests for functions in the functions.js file.
+---------------------------------------------------------------*/
+
+
 // npm run test or npm run test test/pointwithProfit.test.js
 // to run locally do npm install chai
 
