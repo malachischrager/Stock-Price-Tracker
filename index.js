@@ -1,3 +1,9 @@
+/*--------------------------------------------------------------
+This file is our main/driver file that sets up the firebase 
+database, gets the data from the API data from Alphavantage, and 
+calls the functions in the funtions.js file. 
+---------------------------------------------------------------*/
+
 const admin = require('firebase-admin');
 const serviceAccount = require('./stock-key.json');
 const alpha = require('alphavantage')({ key: 'SRAGEGTDQSII8BQG' });

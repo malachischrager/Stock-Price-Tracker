@@ -1,3 +1,7 @@
+/*--------------------------------------------------------------
+This file contains all the necessary functions for our program.
+---------------------------------------------------------------*/
+
 function probOfProfit(results){
   profits = 0;
   losses = 0;
