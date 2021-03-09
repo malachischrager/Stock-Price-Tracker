@@ -2,6 +2,45 @@ const alpha = require('alphavantage')({ key: 'SRAGEGTDQSII8BQG' });
 const MACD = require('technicalindicators').MACD;
 const RSI = require('technicalindicators').RSI;
 
+// get and return relevant OHLC data for $SYMBOL depending on whatever the interval is
+async function getOHLC(symbol, interval){
+  let ohlcData = undefined;
+
+  switch(interval) {
+    case 'min':
+      try{
+        ohlcData = await alpha.data.intraday(symbol, 'full', 'json', '1min');
+      }
+      catch(error){
+        console.log(error);
+      }
+      return ohlcData['Time Series (1min)'];
+
+    case 'h':
+      try{
+        ohlcData = await alpha.data.intraday(symbol, 'compact', 'json', '60min');
+      }
+      catch(error){
+        console.log(error);
+      }
+      return ohlcData['Time Series (60min)'];
+
+    case 'd':
+      try{
+        ohlcData = await alpha.data.daily(symbol, 'compact');
+      }
+      catch(error){
+        console.log(error);
+      }
+      return ohlcData['Time Series (Daily)'];
+
+    default:
+      console.log(interval, "is not a valid interval input, please try again.");
+  }
+
+  return ohlcData;
+}
+
 async function getData(symbol, interval){
   let intraData = await getIntra(symbol);
   let emaData = await ema(symbol, interval);
@@ -28,12 +67,11 @@ async function getData(symbol, interval){
 }
 
 // perhaps should change this to technicalindicators rather than using alphavantage
-async function ema(symbol, interval){
+async function ema(symbol, interval) {
   let emaData = null;
   try {
     emaData = await alpha.technical.ema(symbol, interval, 20, 'close');
-  }
-  catch(error){
+  } catch (error) {
     console.error(error);
   }
   emaData = emaData['Technical Analysis: EMA'];
@@ -41,7 +79,7 @@ async function ema(symbol, interval){
   let emaValue = Object.values(emaData).reverse();
   let emaArray = [];
 
-  for(let i = 0; i < emaTimestamp.length; ++i){
+  for (let i = 0; i < emaTimestamp.length; ++i) {
     emaArray.push([emaTimestamp[i], parseFloat(emaValue[i]['EMA'])]);
   }
   // timestamps = Object.keys(ema_data);
@@ -151,4 +189,4 @@ function parseMarketHours(data){
 
   return parsedArray;
 }
-module.exports = {ema, macd, rsi, getData};
+module.exports = {ema, macd, rsi, getData, getOHLC};
