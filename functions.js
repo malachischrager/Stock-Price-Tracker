@@ -11,12 +11,6 @@ const EMA = require('technicalindicators').EMA;
 const MACD = require('technicalindicators').MACD;
 const RSI = require('technicalindicators').RSI;
 
-const RSI_DAILY = [];
-const RSI_HOURLY = [];
-const RSI_MINUTE = [];
-const MACD_DAILY = [];
-const MACD_HOURLY = [];
-const MACD_MINUTE = [];
 
 
 /** given minute ohlc data, this function will calculate the minute or hourly or daily RSI data for input minute (distinguished by the index)
@@ -42,61 +36,14 @@ async function calcRSI(ohlc, index, interval) {
   return rsiValues[0];
 }
 
-/** given minute ohlc data, this function will calculate the minute or hourly or daily EMA data for input minute (distinguished by the index)
- * interval can either be 1 or 60 or 1440 (representing minutes)
- */
-async function ema(symbol, interval) {
-  pastOHLC = [];
-
-  // push the current and last 26 period data points by interval into an array
-  for (i = 0; i < 26 * interval; i++) {
-    pastOHLC.push(ohlc[index - (i * interval)]);
-  }
-
-  // create the data structure parameter used to calculate EMA with technicalindicators module
-  let inputEMA = {
-    values: pastOHLC,
-    period: interval
-  };
-
-  emaValues = EMA.calculate(inputEMA);
-
-  // there will only be many ema values in this vector, it will be used to calculate the macd of the time
-  return emaValues;
-}
-
-/** calculates a MACD signal indicating buy or sell,
- * first gets EMA data which is necessary for calculating macdData
- */
-async function calcMACD(ohlc, index, symbol) {
-  // grab just ema and exclude timestamp
-  let emaValues = ema(symbol, interval);
-
-  // initialize parameters to get MACD
-  let macdInput = {
-    values: emaValues,
-    fastPeriod: 12,
-    slowPeriod: 26,
-    signalPeriod: 9,
-    SimpleMAOOscillator: false,
-    SimpleMASignal: false
-  }
-
-  // macd_data has MACD, signal, and histogram data
-  // if histogram value is positive, it is buy signal and vice versa
-  let macd_data = await MACD.calculate(macdInput);
-
-  return macd_data;
-}
-
 /** given a list of indicators, this function will parse through start and end point and identify all buy signals
  * and calculate to see if buying there would generate a profit and how much
  */
 async function findPointsWithProfit(indicators, numCandles, profitThreshold, symbol, start, end) {
-  var answers = [];
+  let answers = [];
 
   // get all relevant OHLC data depending on input parameter needs
-  var ohlcData = {};
+  let ohlcData = {};
   for (i = 0; i < indicators.length; i++) {
     indicator = indicators[i];
     for (interval of indicator.intervals) {

@@ -14,7 +14,9 @@ async function getOHLC(symbol, interval){
       catch(error){
         console.log(error);
       }
-      return ohlcData['Time Series (1min)'];
+      ohlcData = parseMarketHours(ohlcData['Time Series (1min)']);
+      console.log(ohlcData);
+      return ohlcData;
 
     case 'h':
       try{
