@@ -23,6 +23,11 @@ const {
   getData
 } = require('./indicators');
 
+const {
+  getMinuteOHLC,
+  getDailyOHLC,
+} = require('./fetchdata');
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
@@ -43,8 +48,11 @@ const indicators = [{
 ];
 
 async function run() {
+  // getMinuteOHLC('GME');
+  // getDailyOHLC('GME');
+  getMinuteOHLC('GME');
   // data = await getData('STXS', '1min');
-  findPointsWithProfit(indicators, 10, 0.03, 'ZM');
+  // findPointsWithProfit(indicators, 10, 0.03, 'ZM');
   // pointsWithProfitRSIOverRange(data, 0.03, 20, 70);
   // pointsWithProfitRSIOverandMACD(data, 0.03, 20, 70);
   // pointsWithProfitRSIUnderRange(data, 0.03, 20, 30);
