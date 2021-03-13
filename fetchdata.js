@@ -8,6 +8,7 @@ const {AjaxClient} = require('ajax-client');
 const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const xhr = new XMLHttpRequest();
 const axios = require('axios');
+const API_KEY = "SRAGEGTDQSII8BQG"
 
 require("dotenv").config();
 
@@ -29,8 +30,24 @@ async function getMinuteOHLC(symbol) {
 
 }
 
-async function getDailyOHLC(symbol){
-  console.log('');
+/**
+ * obtain OHLC data based on the following 3 params
+ * @param symbol: Ticker Symbol e.g. "GME"
+ * @param interval: Time interval between two data points, options include "1min, 5min, 15min, 30min & 60min"
+ * @param slice: Particular segment of data from the past 2 year e.g. "year1month1"
+ */
+async function getOHLCData(symbol, interval, slice){
+     let url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY_EXTENDED&symbol=" + symbol +
+         "&interval=" + interval + "&slice=" + slice + "&apikey=" + API_KEY;
+    ohlcData = undefined;
+    await axios.get(url)
+        .then((response) => {
+            ohlcData = response;
+        })
+        .catch((error) => console.log(error));
+    ohlcData = csvToJSON(ohlcData['data']);
+    ohlcData = await parseRelevantOHLCMinuteData(ohlcData);
+    console.log(ohlcData);
 }
 
 
@@ -87,5 +104,5 @@ function csvToJSON(csv){
 
 module.exports = {
   getMinuteOHLC,
-  getDailyOHLC,
+  getOHLCData,
 };
