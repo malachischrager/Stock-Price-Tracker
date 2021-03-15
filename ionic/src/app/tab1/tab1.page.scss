@@ -1,8 +1,16 @@
+.title {
+    color: navy;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+}
+
 .choose {
-    color: white;
+
+    color: black;
+    font-family: 'Courier New', monospace;
     text-align: center;
-    margin-top: 2%;
-    margin-left: 5%;
+    margin: auto;
+    font-weight:bold;
 }
 
 .options {
@@ -11,5 +19,7 @@
     fill: gray;
     height: 10px;
     width: 200px;
-    margin-left: 5%;
+    margin: auto;
+    padding: 20px;
+
 }
