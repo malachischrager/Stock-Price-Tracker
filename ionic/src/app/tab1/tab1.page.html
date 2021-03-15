@@ -13,6 +13,13 @@
     </ion-toolbar>
   </ion-header>
 
+<ion-list>
+  <ion-item *ngFor="let entry of rsi">
+    <ion-label>{{entry.val}}</ion-label>
+    <ion-checkbox slot="end" [(ngModel)]="entry.isChecked"></ion-checkbox>
+  </ion-item>
+</ion-list>
+
   <!-- <app-explore-container name="Tab 1 page"></app-explore-container> -->
   <ion-label class = choose> Select RSI Timeframe: </ion-label>
   <ion-select class = options>

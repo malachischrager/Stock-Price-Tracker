@@ -6,7 +6,12 @@ import { Component } from '@angular/core';
   styleUrls: ['tab1.page.scss']
 })
 export class Tab1Page {
-
+  public rsi = [
+    { val: 'RSI Hourly', isChecked: true },
+    { val: 'RSI Daily', isChecked: false },
+    { val: 'RSI 4 Hours', isChecked: false },
+    { val: 'RSI Monthly', isChecked: false }
+  ];
   constructor() {}
 
 }
