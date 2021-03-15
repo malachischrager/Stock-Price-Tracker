@@ -1,0 +1,26 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title class = title>
+      Stock Price Tracker
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Tab 1</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- <app-explore-container name="Tab 1 page"></app-explore-container> -->
+  <ion-label class = choose> Select RSI Timeframe: </ion-label>
+  <ion-select class = options multiple=true>
+      <ion-select-option>15 minutes</ion-select-option>
+      <ion-select-option>30 minutes</ion-select-option>
+      <ion-select-option>1 hour</ion-select-option>
+      <ion-select-option>4 hours</ion-select-option>
+      <ion-select-option>1 day</ion-select-option>
+  </ion-select>
+
+</ion-content>
