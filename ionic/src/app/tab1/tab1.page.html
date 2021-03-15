@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
+    <ion-title class = title>
       Stock Price Tracker
     </ion-title>
   </ion-toolbar>
@@ -15,8 +15,7 @@
 
   <!-- <app-explore-container name="Tab 1 page"></app-explore-container> -->
   <ion-label class = choose> Select RSI Timeframe: </ion-label>
-  <ion-select class = options>
-    <ion-label>Times</ion-label>
+  <ion-select class = options multiple=true>
       <ion-select-option>15 minutes</ion-select-option>
       <ion-select-option>30 minutes</ion-select-option>
       <ion-select-option>1 hour</ion-select-option>
