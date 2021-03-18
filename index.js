@@ -48,7 +48,7 @@ const indicators = [{
 ];
 
 async function run() {
-  //getIntervaledOHLC('GME', '30min');
+  getIntervaledOHLC('GME', '30min');
   // getOHLCData("GME", "60min", "year1month1")
   // data = await getData('STXS', '1min');
   // findPointsWithProfit(indicators, 10, 0.03, 'ZM');
