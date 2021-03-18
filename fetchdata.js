@@ -14,35 +14,52 @@ require("dotenv").config();
 
 const client = new AjaxClient();
 
-/** gets 15/30/60 minute intervaled market data for the last 90 days
+/**
+ * obtain OHLC data for the last three months based on the following 3 params
+ * @param symbol: Ticker Symbol e.g. "GME"
+ * @param interval: Time interval between two data points, options include "1min, 5min, 15min, 30min & 60min"
+ * @return array of ohlc data
+ *         [
+              {time: string
+               price: int}
+           ]
  */
 async function getIntervaledOHLC(symbol, interval) {
   ohlcData = [];
 
-  // let listOfQueries = ['year1month1', 'year1month2', 'year1month3'];
+  // for api call slicing purposes, because alphavantage returns data in slices so you need to make multiple api calls
   let listOfQueries = ['year1month3', 'year1month2', 'year1month1'];
+
+  // loop through every query, make an api call and push ohlc data in ohlcData
   for(let i=0; i<listOfQueries.length; i++)
   {
     slice = listOfQueries[i];
     let url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY_EXTENDED&symbol=" + symbol + "&interval="+interval+"&slice=" + slice + "&apikey=" + API_KEY;
     sliceData = undefined;
-    await axios.get(url)
-            .then((response) => {
-              sliceData = response;
-            })
-            .catch((error) => console.log(error));
-    // console.log(sliceData['data']);
-    sliceData = await csvToJSON(sliceData['data'].toString());
     try {
+      await axios.get(url)
+              .then((response) => {
+                sliceData = response;
+              })
+              .catch((error) => console.log(error));
+    }
+    catch(error){
+      console.log(error);
+    }
+
+    try {
+      // convert csv output to JSON
+      sliceData = await csvToJSON(sliceData['data'].toString());
+      // parse sliceData to only include market hours data and remove extended hours data
       sliceData = await parseRelevantOHLCMinuteData(sliceData);
     }
     catch(error) {
       console.log(error);
     }
+
     ohlcData.push.apply(ohlcData, sliceData);
   }
-
-  console.log(ohlcData);
+  return ohlcData;
 }
 
 /**
@@ -88,7 +105,6 @@ function parseRelevantOHLCMinuteData(ohlcData){
     if(time.getHours() > 16) {continue}
 
     relevantData.push({time: ohlcData[i]['time'], datetime: time, price: ohlcData[i]['open']});
-    //console.log(ohlcData[i]);
   }
   return relevantData;
 }

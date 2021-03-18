@@ -12,10 +12,7 @@ const alpha = require('alphavantage')({
 
 const {
   findPointsWithProfit,
-  pointsWithProfitRSIOverRange,
-  pointsWithProfitRSIOverandMACD,
-  pointsWithProfitRSIUnderRange,
-  pointsWithProfitRSIUnderandMACD
+  probOfProfit
 } = require('./functions');
 
 const {
@@ -33,22 +30,33 @@ admin.initializeApp({
 });
 
 const db = admin.firestore();
-const indicators = [{
-    indicator: 'RSI',
-    intervals: ['min'],
-    rsi_params: {
-      high: 70,
-      low: 30
-    }
-  },
-  {
-    indicator: 'MACD',
-    intervals: ['min']
-  }
-];
+// const indicators = [{
+//     indicator: 'RSI',
+//     intervals: ['min'],
+//     rsi_params: {
+//       high: 70,
+//       low: 30
+//     }
+//   },
+//   {
+//     indicator: 'MACD',
+//     intervals: ['min']
+//   }
+// ];
 
 async function run() {
-  //getIntervaledOHLC('GME', '30min');
+  let indicators = ['4 hour', '1 hour'];
+  try {
+    let ohlcIntervaledData = await getIntervaledOHLC('GME', '30min');
+    console.log(ohlcIntervaledData.length);
+    let results = await findPointsWithProfit(indicators, ohlcIntervaledData, '30min', 12, 0.03);
+    probOfProfit(results);
+  }
+  catch(error) {
+    console.log(error);
+  }
+
+
   // getOHLCData("GME", "60min", "year1month1")
   // data = await getData('STXS', '1min');
   // findPointsWithProfit(indicators, 10, 0.03, 'ZM');
