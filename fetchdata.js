@@ -71,6 +71,12 @@ async function getIntervaledOHLC(symbol, interval) {
   return [ ohlcData, dailyOHLC ];
 }
 
+/**
+ * This function returns a list of daily OHLC data for the past 3 months + 15 market days
+ * @param startTime: The Start Time of first OHLC minute historical data point
+ * @param symbol: Ticker Symbol e.g. "GME"
+ * @returns {Promise<[]>}
+ */
 async function getDailyOHLC(startTime, symbol){
     let minuteStartMonth = startTime.getMonth();
     let minuteStartDate = startTime.getDate();
