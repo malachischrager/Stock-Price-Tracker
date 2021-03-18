@@ -9,6 +9,9 @@ const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const xhr = new XMLHttpRequest();
 const axios = require('axios');
 const API_KEY = "SRAGEGTDQSII8BQG"
+const alpha = require('alphavantage')({
+    key: API_KEY
+});
 
 require("dotenv").config();
 
@@ -59,7 +62,43 @@ async function getIntervaledOHLC(symbol, interval) {
 
     ohlcData.push.apply(ohlcData, sliceData);
   }
-  return ohlcData;
+
+  // console.log(ohlcData);
+  // obtaining daily OHLC daily 15 days prior to minute start time
+  let minuteStartTime = new Date(ohlcData[0]['time']);
+  await getDailyOHLC(minuteStartTime, symbol);
+}
+
+async function getDailyOHLC(startTime, symbol){
+    let minuteStartMonth = startTime.getMonth();
+    let minuteStartDate = startTime.getDate();
+    let minuteStartYear = startTime.getFullYear();
+    let dailyData = undefined;
+    let dailyDataInRange = []
+    let counter = 15;
+    try{
+        dailyData = await alpha.data.daily(symbol, 'compact', "json");
+    }
+    catch(error){
+        console.error(error);
+    }
+    dailyData = dailyData['Time Series (Daily)'];
+    let OHLCTimestamp = Object.keys(dailyData);
+    let OHLCValues = Object.values(dailyData);
+    for(let i = 0; i < OHLCTimestamp.length; ++i){
+        let currTime = new Date(OHLCTimestamp[i]);
+        let currMonth = currTime.getMonth();
+        let currDate = currTime.getDate();
+        let currYear = currTime.getFullYear();
+        dailyDataInRange.push({time: currTime, 'OHLC': OHLCValues[i]})
+        if(currYear <= minuteStartYear && currMonth <= minuteStartMonth && currDate < minuteStartDate){
+            counter--;
+            if(counter === 0){
+                break;
+            }
+        }
+    }
+    console.log(dailyDataInRange);
 }
 
 /**
