@@ -3,7 +3,7 @@ This file is our main/driver file that sets up the firebase
 database, gets the data from the API data from Alphavantage, and
 calls the functions in the funtions.js file.
 ---------------------------------------------------------------*/
-
+const moment = require('moment');
 const admin = require('firebase-admin');
 const serviceAccount = require('./stock-key.json');
 const alpha = require('alphavantage')({
@@ -24,7 +24,7 @@ const {
 } = require('./indicators');
 
 const {
-  getMinuteOHLC,
+  getIntervaledOHLC,
   getOHLCData,
 } = require('./fetchdata');
 
@@ -48,8 +48,8 @@ const indicators = [{
 ];
 
 async function run() {
-  // getMinuteOHLC('GME');
-  getOHLCData("GME", "60min", "year1month1")
+  //getIntervaledOHLC('GME', '30min');
+  // getOHLCData("GME", "60min", "year1month1")
   // data = await getData('STXS', '1min');
   // findPointsWithProfit(indicators, 10, 0.03, 'ZM');
   // pointsWithProfitRSIOverRange(data, 0.03, 20, 70);

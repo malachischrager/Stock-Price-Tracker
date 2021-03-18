@@ -14,19 +14,33 @@ require("dotenv").config();
 
 const client = new AjaxClient();
 
-/** gets 15 minute intervaled market data for the last 30 days
+/** gets 15/30/60 minute intervaled market data for the last 90 days
  */
-async function getMinuteOHLC(symbol) {
-  let url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY_EXTENDED&symbol=IBM&interval=15min&slice=year1month1&apikey=SRAGEGTDQSII8BQG';
+async function getIntervaledOHLC(symbol, interval) {
+  ohlcData = [];
 
-  ohlcData = undefined;
-  await axios.get(url)
-          .then((response) => {
-            ohlcData = response;
-          })
-          .catch((error) => console.log(error));
-  ohlcData = csvToJSON(ohlcData['data']);
-  ohlcData = await parseRelevantOHLCMinuteData(ohlcData);
+  // let listOfQueries = ['year1month1', 'year1month2', 'year1month3'];
+  let listOfQueries = ['year1month3', 'year1month2', 'year1month1'];
+  for(let i=0; i<listOfQueries.length; i++)
+  {
+    slice = listOfQueries[i];
+    let url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY_EXTENDED&symbol=" + symbol + "&interval="+interval+"&slice=" + slice + "&apikey=" + API_KEY;
+    sliceData = undefined;
+    await axios.get(url)
+            .then((response) => {
+              sliceData = response;
+            })
+            .catch((error) => console.log(error));
+    // console.log(sliceData['data']);
+    sliceData = await csvToJSON(sliceData['data'].toString());
+    try {
+      sliceData = await parseRelevantOHLCMinuteData(sliceData);
+    }
+    catch(error) {
+      console.log(error);
+    }
+    ohlcData.push.apply(ohlcData, sliceData);
+  }
 
   console.log(ohlcData);
 }
@@ -38,16 +52,16 @@ async function getMinuteOHLC(symbol) {
  * @param slice: Particular segment of data from the past 2 year e.g. "year1month1"
  */
 async function getOHLCData(symbol, interval, slice){
-     let url = "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY_EXTENDED&symbol=" + symbol +
-         "&interval=" + interval + "&slice=" + slice + "&apikey=" + API_KEY;
+
+    let url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + symbol + "&apikey=" + API_KEY;
     ohlcData = undefined;
     await axios.get(url)
         .then((response) => {
             ohlcData = response;
         })
         .catch((error) => console.log(error));
-    ohlcData = csvToJSON(ohlcData['data']);
-    ohlcData = await parseRelevantOHLCMinuteData(ohlcData);
+    // ohlcData = csvToJSON(ohlcData['data']);
+    // ohlcData = await parseRelevantOHLCMinuteData(ohlcData);
     console.log(ohlcData);
 }
 
@@ -56,19 +70,24 @@ async function getOHLCData(symbol, interval, slice){
  *  {'timestamp': {price: int}}
  */
 function parseRelevantOHLCMinuteData(ohlcData){
-  let relevantData = {};
+  let relevantData = [];
   ohlcData = JSON.parse(ohlcData);
-
   //console.log(ohlcData);
   for(i=ohlcData.length-2; i>=0; i--){
     let time = ohlcData[i]['time'];
     time = new Date(time);
+
+    // january is 0 so we add 1 to .getMonth()
+    month = time.getMonth()+1;
+    day = time.getDate();
+    year = time.getFullYear();
+
     if(time.getHours() == 9 && time.getMinutes() < 30){continue}
     if(time.getHours() < 9) {continue}
     if(time.getHours() == 16 && time.getMinutes() > 0) {continue}
     if(time.getHours() > 16) {continue}
 
-    relevantData[time] = {price: ohlcData[i]['open']};
+    relevantData.push({time: ohlcData[i]['time'], datetime: time, price: ohlcData[i]['open']});
     //console.log(ohlcData[i]);
   }
   return relevantData;
@@ -104,6 +123,6 @@ function csvToJSON(csv){
 
 
 module.exports = {
-  getMinuteOHLC,
+  getIntervaledOHLC,
   getOHLCData,
 };
