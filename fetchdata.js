@@ -27,6 +27,7 @@ async function getMinuteOHLC(symbol) {
   ohlcData = csvToJSON(ohlcData['data']);
   ohlcData = await parseRelevantOHLCMinuteData(ohlcData);
 
+  console.log(ohlcData);
 }
 
 async function getDailyOHLC(symbol){
