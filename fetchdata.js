@@ -66,7 +66,9 @@ async function getIntervaledOHLC(symbol, interval) {
   // console.log(ohlcData);
   // obtaining daily OHLC daily 15 days prior to minute start time
   let minuteStartTime = new Date(ohlcData[0]['time']);
-  await getDailyOHLC(minuteStartTime, symbol);
+  let dailyOHLC = await getDailyOHLC(minuteStartTime, symbol);
+
+  return [ ohlcData, dailyOHLC ];
 }
 
 async function getDailyOHLC(startTime, symbol){
@@ -90,7 +92,9 @@ async function getDailyOHLC(startTime, symbol){
         let currMonth = currTime.getMonth();
         let currDate = currTime.getDate();
         let currYear = currTime.getFullYear();
-        dailyDataInRange.push({time: currTime, 'OHLC': OHLCValues[i]})
+
+        dailyDataInRange.push({time: OHLCTimestamp[i], price: OHLCValues[i]['1. open']})
+
         if(currYear <= minuteStartYear && currMonth <= minuteStartMonth && currDate < minuteStartDate){
             counter--;
             if(counter === 0){
@@ -98,7 +102,8 @@ async function getDailyOHLC(startTime, symbol){
             }
         }
     }
-    console.log(dailyDataInRange);
+    dailyDataInRange.reverse();
+    return dailyDataInRange;
 }
 
 /**

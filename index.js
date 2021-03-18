@@ -45,11 +45,13 @@ const db = admin.firestore();
 // ];
 
 async function run() {
-  let indicators = ['4 hour', '1 hour'];
+  let indicators = ['Daily', '1 hour', '4 hour'];
   try {
-    let ohlcIntervaledData = await getIntervaledOHLC('GME', '30min');
+    let ohlcData = await getIntervaledOHLC('GME', '30min');
+    let ohlcIntervaledData = ohlcData[0];
+    let ohlcDailyData = ohlcData[1];
     console.log(ohlcIntervaledData.length);
-    let results = await findPointsWithProfit(indicators, ohlcIntervaledData, '30min', 12, 0.03);
+    let results = await findPointsWithProfit(indicators, ohlcIntervaledData, ohlcDailyData, '30min', 12, 0.03);
     probOfProfit(results);
   }
   catch(error) {

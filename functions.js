@@ -79,6 +79,61 @@ async function getRSISignalByHour(ohlc, index, interval, buyOrSell, numHours) {
   }
 }
 
+/** given intervaled ohlc data, this function will calculate RSI for input point (distinguished by the index)
+ * interval can either be 1 or 60 or 1440 (representing minutes)
+ * @param ohlc: array
+ * @param startDate: string index of starting point
+ * @param buyOrSell: string ('buy' or 'sell') depending on if you want to look for buy or sell signal
+ */
+async function getRSISignalDaily(ohlc, startDate, buyOrSell) {
+  pastOHLC = [];
+  startDate = startDate.substring(0, 10);
+
+  startIndex = 0;
+  for(let i=0; i<ohlc.length; i++)
+  {
+    if(ohlc[i].time == startDate){
+      startIndex = i;
+    }
+  }
+
+  if(startIndex-14 < 0){
+    return 0;
+  }
+
+  // push the current and last 15 period data points by interval into an array
+  for (i = startIndex-14; i <= startIndex; i++) {
+    pastOHLC.push(parseFloat(ohlc[i].price));
+  }
+
+  // create the data structure parameter used to calculate RSI with technicalindicators module
+  let inputRSI = {
+    values: pastOHLC,
+    period: 14
+  };
+  let rsiValues = undefined;
+
+  // call technicalindicators to calculate rsi value
+  try {
+    rsiValues = await RSI.calculate(inputRSI);
+  }
+  catch(error) {
+    console.log(error);
+  }
+
+  // if rsi indicates either buy or sell, return 1
+  // if rsi does not indicate action, return 0
+  if(buyOrSell == 'buy' && rsiValues[0] <= 30){
+    return 1;
+  }
+  else if(buyOrSell == 'sell' && rsiValues[0] >= 70){
+    return 1;
+  }
+  else{
+    return 0;
+  }
+}
+
 /** given a list of indicators, this function will parse through start and end point and identify all buy/sell signals
  * and calculate to see if buying there would generate a profit and how much
  * @param indicators: array options include 'Daily', '4 hour', and '1 hour'
@@ -96,7 +151,7 @@ async function getRSISignalByHour(ohlc, index, interval, buyOrSell, numHours) {
      }
    ]
  */
-async function findPointsWithProfit(indicators, ohlcData, interval, numCandles, profitThreshold) {
+async function findPointsWithProfit(indicators, ohlcData, ohlcDailyData, interval, numCandles, profitThreshold) {
   let answers = [];
   let results = [];
 
@@ -125,6 +180,14 @@ async function findPointsWithProfit(indicators, ohlcData, interval, numCandles, 
       else if(indicator == '4 hour'){
         try {
           bool = await getRSISignalByHour(ohlcData, i, interval, 'buy', 4);
+        }
+        catch(error){
+          console.log(error);
+        }
+      }
+      else if(indicator == 'Daily'){
+        try {
+          bool = await getRSISignalDaily(ohlcDailyData, currentTime, 'buy');
         }
         catch(error){
           console.log(error);
@@ -161,7 +224,6 @@ async function findPointsWithProfit(indicators, ohlcData, interval, numCandles, 
       }
     }
   }
-
   return results;
 }
 
