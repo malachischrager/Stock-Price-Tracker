@@ -62,7 +62,7 @@ async function findPointsWithProfit(indicators, numCandles, profitThreshold, sym
 }
 
 async function pointsWithProfitRSIOverRange(data, profitThreshold, numCandles, rsiHighRange) {
-  var answers = [];
+  let answers = [];
   for (i = 0; i < data.length; i++) {
     if (i + numCandles >= data.length) {
       break;
@@ -189,9 +189,9 @@ async function pointsWithProfitRSIUnderRange(data, profitThreshold, numCandles, 
       break;
     }
 
-    timestamp = data[i][0];
-    currPrice = data[i][1];
-    rsi = data[i][2];
+    let timestamp = data[i][0];
+    let currPrice = data[i][1];
+    let rsi = data[i][2];
 
     if (rsi < rsiLowRange) {
       for (j = 1; j <= numCandles; j++) {
@@ -220,8 +220,8 @@ async function pointsWithProfitRSIUnderRange(data, profitThreshold, numCandles, 
 }
 
 function probOfProfit(results) {
-  profits = 0;
-  losses = 0;
+  let profits = 0;
+  let losses = 0;
   for (i = 0; i < results.length; i++) {
     dataPoint = results[i];
     if (dataPoint.profit) {

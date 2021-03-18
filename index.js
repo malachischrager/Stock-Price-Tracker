@@ -25,7 +25,7 @@ const {
 
 const {
   getMinuteOHLC,
-  getDailyOHLC,
+  getOHLCData,
 } = require('./fetchdata');
 
 admin.initializeApp({
@@ -49,8 +49,7 @@ const indicators = [{
 
 async function run() {
   // getMinuteOHLC('GME');
-  // getDailyOHLC('GME');
-  getMinuteOHLC('GME');
+  getOHLCData("GME", "60min", "year1month1")
   // data = await getData('STXS', '1min');
   // findPointsWithProfit(indicators, 10, 0.03, 'ZM');
   // pointsWithProfitRSIOverRange(data, 0.03, 20, 70);
