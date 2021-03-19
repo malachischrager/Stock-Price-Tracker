@@ -7,10 +7,10 @@ export const environment = {
   firebase: {
     apiKey: "AIzaSyD0_AgSXRTxaUX9IU7VlZDMP6w2mSMPcn4",
     authDomain: "stock-price-tracker-a2e8a.firebaseapp.com",
-    databaseURL: "YOUR_DATABASE_URL",
     projectId: "stock-price-tracker-a2e8a",
     storageBucket: "stock-price-tracker-a2e8a.appspot.com",
     messagingSenderId: "692191116552",
+    appId: "1:692191116552:web:61a3046230db96999400bd"
   }
 };
 
