@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-// import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireAuth } from '@angular/fire/auth';
+import firebase from "firebase/app";
+import "firebase/auth";
 
 @Component({
   selector: 'app-tab1',
@@ -14,20 +16,20 @@ export class Tab1Page {
     { val: 'RSI Monthly', isChecked: false }
   ];
   constructor(
-    // private fireauth: AngularFireAuth
+    private fireauth: AngularFireAuth
 
   ) {}
 
-  // anonymouseSignIn() {
-  //   return new Promise<any>((resolve, reject) => {
-  //     this.fireauth.signInAnonymously().then((data) => {
-  //       resolve(data);
-  //     }).catch((error) => {
-  //       const errorCode = error.code;
-  //       const errorMessage = error.message;
-  //       reject(`login failed ${error.message}`);
-  //     });
-  //   });
-  // }
+  anonymouseSignIn() {
+    return new Promise<any>((resolve, reject) => {
+      this.fireauth.signInAnonymously().then((data) => {
+        resolve(data);
+      }).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        reject(`login failed ${error.message}`);
+      });
+    });
+  }
 
 }
