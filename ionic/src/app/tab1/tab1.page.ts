@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/firestore';
 import firebase from "firebase/app";
 import "firebase/auth";
 
@@ -16,7 +18,10 @@ export class Tab1Page {
     { val: 'RSI Monthly', isChecked: false }
   ];
   constructor(
-    private fireauth: AngularFireAuth
+    public fireauth: AngularFireAuth,
+    public afs: AngularFirestoreModule,
+    public firestore: AngularFirestore
+    // public afsc: AngularFirestoreCollection
 
   ) {}
 
@@ -30,6 +35,33 @@ export class Tab1Page {
         reject(`login failed ${error.message}`);
       });
     });
+  }
+
+  updatePreferences() {
+    let userid = firebase.auth().currentUser.uid;
+    let perferencesArray = new Array;
+    for(let i = 0; i < this.rsi.length; i++) {
+      if(this.rsi[i].isChecked) {
+        perferencesArray.push(this.rsi[i].val);
+      }
+    }
+    return new Promise<any>((resolve, reject) => {
+      this.firestore.collection('/preferences').add({
+        userID: userid,
+        preferences: perferencesArray
+      })
+      .then(
+        (res) => {
+          resolve(res)
+        },
+        err => reject(err)
+      )
+      })
+  }
+  
+
+  ngOnInit() {
+    this.anonymouseSignIn();
   }
 
 }
