@@ -21,8 +21,6 @@ export class Tab1Page {
     public fireauth: AngularFireAuth,
     public afs: AngularFirestoreModule,
     public firestore: AngularFirestore
-    // public afsc: AngularFirestoreCollection
-
   ) {}
 
   anonymouseSignIn() {
@@ -37,26 +35,73 @@ export class Tab1Page {
     });
   }
 
-  updatePreferences() {
+  
+  addPreferences() {
     let userid = firebase.auth().currentUser.uid;
     let perferencesArray = new Array;
+    let documentId;
     for(let i = 0; i < this.rsi.length; i++) {
       if(this.rsi[i].isChecked) {
         perferencesArray.push(this.rsi[i].val);
       }
     }
-    return new Promise<any>((resolve, reject) => {
-      this.firestore.collection('/preferences').add({
-        userID: userid,
-        preferences: perferencesArray
-      })
-      .then(
-        (res) => {
-          resolve(res)
-        },
-        err => reject(err)
-      )
-      })
+    new Promise<any>((resolve, reject) => {
+
+      this.firestore.collection('alerts').doc(userid).collection("alertsID").add({
+          preferences: perferencesArray
+        }
+      ).then(
+          (res) => {
+            documentId = res;
+            console.log(res);
+            resolve(res)
+          },
+          err => reject(err)
+        )
+        })
+
+    new Promise<any>((resolve, reject) => {
+
+      this.firestore.collection('all_alerts').doc().collection("alertsID").add({
+          userID : userid,
+          preferences: perferencesArray
+        }
+      ).then(
+          (res) => {
+            documentId = res;
+            console.log(res);
+            resolve(res)
+          },
+          err => reject(err)
+        )
+        })
+
+        
+  }
+
+  updatePreferences() {
+    let userid = firebase.auth().currentUser.uid;
+    let perferencesArray = new Array;
+    let documentId;
+    for(let i = 0; i < this.rsi.length; i++) {
+      if(this.rsi[i].isChecked) {
+        perferencesArray.push(this.rsi[i].val);
+      }
+    }
+    // return new Promise<any>((resolve, reject) => {
+
+    //   this.firestore.collection('alerts').doc(userid).collection("alertsID").update({
+    //       preferences: perferencesArray
+    //     }
+    //   ).then(
+    //       (res) => {
+    //         documentId = res;
+    //         console.log(res);
+    //         resolve(res)
+    //       },
+    //       err => reject(err)
+    //     )
+    //     })
   }
   
 
