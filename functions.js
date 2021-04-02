@@ -12,219 +12,229 @@ const MACD = require('technicalindicators').MACD;
 const RSI = require('technicalindicators').RSI;
 
 
-
-/** given minute ohlc data, this function will calculate the minute or hourly or daily RSI data for input minute (distinguished by the index)
+/** given intervaled ohlc data, this function will calculate RSI for input point (distinguished by the index)
  * interval can either be 1 or 60 or 1440 (representing minutes)
+ * @param ohlc: array
+ * @param index: int index of starting point
+ * @param interval: string (1min, 15min, 30min, 60min) this is the interval at which your OHLC data jumps
+ * @param buyOrSell: string ('buy' or 'sell') depending on if you want to look for buy or sell signal
+ * @param numHours: int the interval at which you would like to find RSI value
  */
-async function calcRSI(ohlc, index, interval) {
+async function getRSISignalByHour(ohlc, index, interval, buyOrSell, numHours) {
   pastOHLC = [];
+  let skip = 0;
 
-  // push the current and last 14 period data points by interval into an array
-  for (i = 0; i < 15 * interval; i++) {
-    pastOHLC.push(ohlc[index - (i * interval)]);
+  // dependiing on input interval, calculate the number of indices to go back and the number of indexes you skip between data points
+  if(interval == '60min'){
+    interval = 14*numHours;
+    skip = 1*numHours;
+  }
+  else if(interval == '30min'){
+    interval = 28*numHours;
+    skip = 2*numHours;
+  }
+  else if(interval == '15min'){
+    interval = 56*numHours;
+    skip = 4*numHours;
+  }
+  else if(interval == '1min'){
+    interval = 840*numHours;
+    skip = 60*numHours;
+  }
+
+  if(index-interval < 0){
+    return 0;
+  }
+
+  // push the current and last 15 period data points by interval into an array
+  for (i = index-interval; i <= index; i += skip) {
+    pastOHLC.push(parseFloat(ohlc[i].price));
   }
 
   // create the data structure parameter used to calculate RSI with technicalindicators module
   let inputRSI = {
     values: pastOHLC,
-    period: interval
+    period: 14
   };
+  let rsiValues = undefined;
 
-  rsiValues = RSI.calculate(inputRSI);
+  // call technicalindicators to calculate rsi value
+  try {
+    rsiValues = await RSI.calculate(inputRSI);
+  }
+  catch(error) {
+    console.log(error);
+  }
 
-  // there will only be one value in return vector, return that value
-  return rsiValues[0];
+  // if rsi indicates either buy or sell, return 1
+  // if rsi does not indicate action, return 0
+  if(buyOrSell == 'buy' && rsiValues[0] <= 30){
+    return 1;
+  }
+  else if(buyOrSell == 'sell' && rsiValues[0] >= 70){
+    return 1;
+  }
+  else{
+    return 0;
+  }
 }
 
-/** given a list of indicators, this function will parse through start and end point and identify all buy signals
- * and calculate to see if buying there would generate a profit and how much
+/** given intervaled ohlc data, this function will calculate RSI for input point (distinguished by the index)
+ * interval can either be 1 or 60 or 1440 (representing minutes)
+ * @param ohlc: array
+ * @param startDate: string index of starting point
+ * @param buyOrSell: string ('buy' or 'sell') depending on if you want to look for buy or sell signal
  */
-async function findPointsWithProfit(indicators, numCandles, profitThreshold, symbol, start, end) {
+async function getRSISignalDaily(ohlc, startDate, buyOrSell) {
+  pastOHLC = [];
+  startDate = startDate.substring(0, 10);
+
+  startIndex = 0;
+  for(let i=0; i<ohlc.length; i++)
+  {
+    if(ohlc[i].time == startDate){
+      startIndex = i;
+    }
+  }
+
+  if(startIndex-14 < 0){
+    return 0;
+  }
+
+  // push the current and last 15 period data points by interval into an array
+  for (i = startIndex-14; i <= startIndex; i++) {
+    pastOHLC.push(parseFloat(ohlc[i].price));
+  }
+
+  // create the data structure parameter used to calculate RSI with technicalindicators module
+  let inputRSI = {
+    values: pastOHLC,
+    period: 14
+  };
+  let rsiValues = undefined;
+
+  // call technicalindicators to calculate rsi value
+  try {
+    rsiValues = await RSI.calculate(inputRSI);
+  }
+  catch(error) {
+    console.log(error);
+  }
+
+  // if rsi indicates either buy or sell, return 1
+  // if rsi does not indicate action, return 0
+  if(buyOrSell == 'buy' && rsiValues[0] <= 30){
+    return 1;
+  }
+  else if(buyOrSell == 'sell' && rsiValues[0] >= 70){
+    return 1;
+  }
+  else{
+    return 0;
+  }
+}
+
+/** given a list of indicators, this function will parse through start and end point and identify all buy/sell signals
+ * and calculate to see if buying there would generate a profit and how much
+ * @param indicators: array options include 'Daily', '4 hour', and '1 hour'
+ * @param ohlcData: array ohlcData at datapoints every x intervals
+ * @param interval: string (1min, 15min, 30min, 60min) this is the interval at which your OHLC data jumps
+ * @param numCandles: int the number of candles to look forward for profitThreshold
+ * @param profitThreshold: float the minimum profit required to make to sell your holding
+ * results will be returned in an array with entries for every buy point:
+ * [
+     {
+       buyAt: ohlcData
+       sellAt: ohlcData
+       profitable: true or false
+       profit: float
+     }
+   ]
+ */
+async function findPointsWithProfit(indicators, ohlcData, ohlcDailyData, interval, numCandles, profitThreshold) {
   let answers = [];
+  let results = [];
 
   // get all relevant OHLC data depending on input parameter needs
-  let ohlcData = {};
-  for (i = 0; i < indicators.length; i++) {
-    indicator = indicators[i];
-    for (interval of indicator.intervals) {
-      if (!(interval in ohlcData)) {
-        intervalData = await getOHLC(symbol, interval);
-        ohlcData[interval] = intervalData;
+  for (let i = 0; i < ohlcData.length; i++) {
+    currentData = ohlcData[i];
+    currentTime = currentData.time;
+    currentPrice = currentData.price;
+
+    // indicatorBooleans will hold buy or sell signals (0 or 1) for every interval indicator you originally input
+    // interval indicators supports RSI 1 hour, RSI 4 hour, and RSI Daily currently
+    let indicatorBooleans = [];
+    for(let j=0; j < indicators.length; j++) {
+      let bool = -1;
+      let indicator = indicators[j];
+
+      // depending on the interval indicator, call getRSISignal function and it will return a 0 or 1 depending on if you should make an action
+      if(indicator == '1 hour'){
+        try {
+          bool = await getRSISignalByHour(ohlcData, i, interval, 'buy', 1);
+        }
+        catch(error){
+          console.log(error);
+        }
       }
+      else if(indicator == '4 hour'){
+        try {
+          bool = await getRSISignalByHour(ohlcData, i, interval, 'buy', 4);
+        }
+        catch(error){
+          console.log(error);
+        }
+      }
+      else if(indicator == 'Daily'){
+        try {
+          bool = await getRSISignalDaily(ohlcDailyData, currentTime, 'buy');
+        }
+        catch(error){
+          console.log(error);
+        }
+      }
+      // push returned bool into indicatorBooleans
+      indicatorBooleans.push(bool);
     }
-  }
 
-  // TO BE CONTINUED: loop through ohlc array from a given start til end and identify all buy opportunities based on input indicators
-  // for every indicator call either getRSI or getMACD to determine if there is a buy signal at that point
-  // if there is a buy signal, move forward and see if profit will be made
+    // if indicatorBooleans does not include 0, it means you have a buy or sell signal for all inputted indicators
+    if(!indicatorBooleans.includes(0)){
+      buyPrice = parseFloat(ohlcData[i].price);
 
-  console.log(ohlcData);
-}
+      // loop ahead numCandles and if you ever hit profit threshold, push {profit: true} result into results
+      // if you never hit profit, it will push a {profit: false} into results
+      for(let j = i+1; j < i + numCandles; j++){
+        // if you get to the end of ohlc data, break out of loop
+        if(j >= ohlcData.length)
+        {
+          break;
+        }
+        futurePrice = parseFloat(ohlcData[j].price);
 
-async function pointsWithProfitRSIOverRange(data, profitThreshold, numCandles, rsiHighRange) {
-  var answers = [];
-  for (i = 0; i < data.length; i++) {
-    if (i + numCandles >= data.length) {
-      break;
-    }
-
-    timestamp = data[i][0];
-    currPrice = data[i][1];
-    rsi = data[i][2];
-
-    if (rsi > rsiHighRange) {
-      for (j = 1; j <= numCandles; j++) {
-        endingPrice = data[i + j][1];
-        if (endingPrice > currPrice * (1 + profitThreshold)) {
-          profitVal = endingPrice - currPrice;
-          answers.push({
-            timestamp: timestamp,
-            profit: true,
-            profitValue: profitVal
-          });
+        // profit found, push true to results
+        if(futurePrice > (1 + profitThreshold) * buyPrice){
+          results.push({buyAt: ohlcData[i], sellAt: ohlcData[j], profitable: true, profit: futurePrice - buyPrice});
           break;
         }
 
-        if (j == numCandles) {
-          answers.push({
-            timestamp: timestamp,
-            profit: false,
-            profitValue: 0
-          });
+        // end of numCandles, no profit, push false to results
+        if(j == i + numCandles - 1){
+          results.push({buyAt: ohlcData[i], sellAt: undefined, profitable: false, profit: 0});
         }
       }
     }
   }
-  probOfProfit(answers);
+  return results;
 }
 
-async function pointsWithProfitRSIOverandMACD(data, profitThreshold, numCandles, rsiHighRange) {
-  var answers = [];
-  for (i = 0; i < data.length; i++) {
-    if (i + numCandles >= data.length) {
-      break;
-    }
-
-    timestamp = data[i][0];
-    currPrice = data[i][1];
-    rsi = data[i][2];
-    macd = data[i][3];
-
-    if (!macd) {
-      continue;
-    }
-
-    if (rsi > rsiHighRange && macd['histogram'] > 0) {
-      for (j = 1; j <= numCandles; j++) {
-        endingPrice = data[i + j][1];
-        if (endingPrice > currPrice * (1 + profitThreshold)) {
-          profitVal = endingPrice - currPrice;
-          answers.push({
-            timestamp: timestamp,
-            profit: true,
-            profitValue: profitVal
-          });
-          break;
-        }
-
-        if (j == numCandles) {
-          answers.push({
-            timestamp: timestamp,
-            profit: false,
-            profitValue: 0
-          });
-        }
-      }
-    }
-  }
-  probOfProfit(answers);
-}
-
-async function pointsWithProfitRSIUnderandMACD(data, profitThreshold, numCandles, rsiLowRange) {
-  var answers = [];
-  for (i = 0; i < data.length; i++) {
-    if (i + numCandles >= data.length) {
-      break;
-    }
-
-    timestamp = data[i][0];
-    currPrice = data[i][1];
-    rsi = data[i][2];
-    macd = data[i][3];
-
-    if (!macd) {
-      continue;
-    }
-
-    if (rsi < rsiLowRange && macd['histogram'] > 0) {
-      for (j = 1; j <= numCandles; j++) {
-        endingPrice = data[i + j][1];
-        if (endingPrice > currPrice * (1 + profitThreshold)) {
-          profitVal = endingPrice - currPrice;
-          answers.push({
-            timestamp: timestamp,
-            profit: true,
-            profitValue: profitVal
-          });
-          break;
-        }
-
-        if (j == numCandles) {
-          answers.push({
-            timestamp: timestamp,
-            profit: false,
-            profitValue: 0
-          });
-        }
-      }
-    }
-  }
-  probOfProfit(answers);
-}
-
-async function pointsWithProfitRSIUnderRange(data, profitThreshold, numCandles, rsiLowRange) {
-  var answers = [];
-  for (i = 0; i < data.length; i++) {
-    if (i + numCandles >= data.length) {
-      break;
-    }
-
-    timestamp = data[i][0];
-    currPrice = data[i][1];
-    rsi = data[i][2];
-
-    if (rsi < rsiLowRange) {
-      for (j = 1; j <= numCandles; j++) {
-        endingPrice = data[i + j][1];
-        if (endingPrice > currPrice * (1 + profitThreshold)) {
-          profitVal = endingPrice - currPrice;
-          answers.push({
-            timestamp: timestamp,
-            profit: true,
-            profitValue: profitVal
-          });
-          break;
-        }
-
-        if (j == numCandles) {
-          answers.push({
-            timestamp: timestamp,
-            profit: false,
-            profitValue: 0
-          });
-        }
-      }
-    }
-  }
-  probOfProfit(answers);
-}
-
+/** calculates the profitability percentage given a results array returned from findPointsWithProfit
+ */
 function probOfProfit(results) {
-  profits = 0;
-  losses = 0;
+  let profits = 0;
+  let losses = 0;
   for (i = 0; i < results.length; i++) {
     dataPoint = results[i];
-    if (dataPoint.profit) {
+    if (dataPoint.profitable) {
       profits += 1;
     } else {
       losses += 1;
@@ -232,15 +242,11 @@ function probOfProfit(results) {
   }
 
   prob = (profits) / (profits + losses) * 100;
-  console.log(profits, losses, results.length, prob);
+  console.log("Profits:", profits, "Losses:", losses, "Probability of profit (in percent):", prob);
   return prob;
 }
 
 module.exports = {
   probOfProfit,
-  pointsWithProfitRSIOverRange,
-  pointsWithProfitRSIOverandMACD,
-  pointsWithProfitRSIUnderRange,
-  pointsWithProfitRSIUnderandMACD,
   findPointsWithProfit
 };
