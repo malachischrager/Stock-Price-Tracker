@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/firestore';
 import firebase from "firebase/app";
 import "firebase/auth";
 
@@ -16,8 +18,9 @@ export class Tab1Page {
     { val: 'RSI Monthly', isChecked: false }
   ];
   constructor(
-    private fireauth: AngularFireAuth
-
+    public fireauth: AngularFireAuth,
+    public afs: AngularFirestoreModule,
+    public firestore: AngularFirestore
   ) {}
 
   anonymouseSignIn() {
@@ -30,6 +33,80 @@ export class Tab1Page {
         reject(`login failed ${error.message}`);
       });
     });
+  }
+
+  
+  addPreferences() {
+    let userid = firebase.auth().currentUser.uid;
+    let perferencesArray = new Array;
+    let documentId;
+    for(let i = 0; i < this.rsi.length; i++) {
+      if(this.rsi[i].isChecked) {
+        perferencesArray.push(this.rsi[i].val);
+      }
+    }
+    new Promise<any>((resolve, reject) => {
+
+      this.firestore.collection('alerts').doc(userid).collection("alertsID").add({
+          preferences: perferencesArray
+        }
+      ).then(
+          (res) => {
+            documentId = res;
+            console.log(res);
+            resolve(res)
+          },
+          err => reject(err)
+        )
+        })
+
+    new Promise<any>((resolve, reject) => {
+
+      this.firestore.collection('all_alerts').doc().collection("alertsID").add({
+          userID : userid,
+          preferences: perferencesArray
+        }
+      ).then(
+          (res) => {
+            documentId = res;
+            console.log(res);
+            resolve(res)
+          },
+          err => reject(err)
+        )
+        })
+
+        
+  }
+
+  updatePreferences() {
+    let userid = firebase.auth().currentUser.uid;
+    let perferencesArray = new Array;
+    let documentId;
+    for(let i = 0; i < this.rsi.length; i++) {
+      if(this.rsi[i].isChecked) {
+        perferencesArray.push(this.rsi[i].val);
+      }
+    }
+    // return new Promise<any>((resolve, reject) => {
+
+    //   this.firestore.collection('alerts').doc(userid).collection("alertsID").update({
+    //       preferences: perferencesArray
+    //     }
+    //   ).then(
+    //       (res) => {
+    //         documentId = res;
+    //         console.log(res);
+    //         resolve(res)
+    //       },
+    //       err => reject(err)
+    //     )
+    //     })
+  }
+  
+
+  ngOnInit() {
+    this.anonymouseSignIn();
   }
 
 }
