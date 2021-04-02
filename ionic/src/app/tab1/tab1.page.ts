@@ -75,8 +75,6 @@ export class Tab1Page {
           err => reject(err)
         )
         })
-
-        
   }
 
   updatePreferences() {
@@ -88,23 +86,16 @@ export class Tab1Page {
         perferencesArray.push(this.rsi[i].val);
       }
     }
-    // return new Promise<any>((resolve, reject) => {
+  }
 
-    //   this.firestore.collection('alerts').doc(userid).collection("alertsID").update({
-    //       preferences: perferencesArray
-    //     }
-    //   ).then(
-    //       (res) => {
-    //         documentId = res;
-    //         console.log(res);
-    //         resolve(res)
-    //       },
-    //       err => reject(err)
-    //     )
-    //     })
+  deletePreferences() {
+
+  }
+
+  displayPreferences() {
+
   }
   
-
   ngOnInit() {
     this.anonymouseSignIn();
   }
