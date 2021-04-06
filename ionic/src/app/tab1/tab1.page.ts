@@ -4,6 +4,12 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFirestore } from '@angular/fire/firestore';
 import firebase from "firebase/app";
 import "firebase/auth";
+import {
+  findPointsWithProfit,
+  probOfProfit
+} from './../backend/functions.js';
+
+import {getIntervaledOHLC, getOHLCData} from './../backend/fetchdata.js';
 
 @Component({
   selector: 'app-tab1',
@@ -35,8 +41,8 @@ export class Tab1Page {
     });
   }
 
-  
-  addPreferences() {
+
+  async addPreferences() {
     let userid = firebase.auth().currentUser.uid;
     let perferencesArray = new Array;
     let documentId;
@@ -45,6 +51,19 @@ export class Tab1Page {
         perferencesArray.push(this.rsi[i].val);
       }
     }
+    let indicators = ['Daily', '1 hour', '4 hour'];
+    try {
+      let ohlcData = await getIntervaledOHLC('GME', '30min');
+      let ohlcIntervaledData = ohlcData[0];
+      let ohlcDailyData = ohlcData[1];
+
+      let results = await findPointsWithProfit(indicators, ohlcIntervaledData, ohlcDailyData, '30min', 12, 0.03);
+      probOfProfit(results);
+    }
+    catch(error) {
+        console.log(error);
+    }
+
     new Promise<any>((resolve, reject) => {
 
       this.firestore.collection('alerts').doc(userid).collection("alertsID").add({
@@ -76,7 +95,7 @@ export class Tab1Page {
         )
         })
 
-        
+
   }
 
   updatePreferences() {
@@ -103,7 +122,7 @@ export class Tab1Page {
     //     )
     //     })
   }
-  
+
 
   ngOnInit() {
     this.anonymouseSignIn();

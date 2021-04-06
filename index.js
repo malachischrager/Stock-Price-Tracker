@@ -6,6 +6,12 @@ calls the functions in the funtions.js file.
 const moment = require('moment');
 const admin = require('firebase-admin');
 const serviceAccount = require('./stock-key.json');
+var express = require('express');
+var cors = require('cors');
+
+var app = express();
+app.use(cors({origin: '*'}));
+
 const alpha = require('alphavantage')({
   key: 'SRAGEGTDQSII8BQG'
 });
@@ -43,16 +49,62 @@ const db = admin.firestore();
 //     intervals: ['min']
 //   }
 // ];
+app.get('/', async function (req, res) {
+  let indicators = ['1 hour'];
+  try {
+    let ohlcData = await getIntervaledOHLC('TSLA', '30min');
+    let ohlcIntervaledData = ohlcData[0];
+    let ohlcDailyData = ohlcData[1];
 
+    let results = await findPointsWithProfit(indicators, ohlcIntervaledData, ohlcDailyData, '30min', 12, 0.03);
+    let probProf = probOfProfit(results[0]);
+    let labels = results[1];
+    let graphData = results[2];
+    results[0] = probProf;
+
+    res.send(results);
+
+  }
+  catch(error) {
+    console.log(error);
+  }
+})
+
+app.listen(3000);
 async function run() {
-  let indicators = ['Daily', '1 hour', '4 hour'];
+
+  let indicators = ['Daily'];
   try {
     let ohlcData = await getIntervaledOHLC('GME', '30min');
     let ohlcIntervaledData = ohlcData[0];
     let ohlcDailyData = ohlcData[1];
-    console.log(ohlcIntervaledData.length);
-    let results = await findPointsWithProfit(indicators, ohlcIntervaledData, ohlcDailyData, '30min', 12, 0.03);
-    probOfProfit(results);
+
+    let results = await findPointsWithProfit(indicators, ohlcDailyData, ohlcDailyData, '30min', 12, 0.03);
+    probOfProfit(results[0]);
+    let labels = results[1];
+    let graphData = results[2];
+    console.log(labels);
+    console.log(graphData);
+
+
+    // document.write('ha');
+    //
+    // const config = {
+    //   type: 'bar',
+    //   data: data,
+    //   options: {
+    //     responsive: true,
+    //     plugins: {
+    //       legend: {
+    //         position: 'top',
+    //       },
+    //       title: {
+    //         display: true,
+    //         text: 'Chart.js Bar Chart'
+    //       }
+    //     }
+    //   },
+    // };
   }
   catch(error) {
     console.log(error);
@@ -76,4 +128,4 @@ async function run() {
   // }
 }
 
-run();
+//run();
