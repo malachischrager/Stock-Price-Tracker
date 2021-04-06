@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { HttpClient } from '@angular/common/http';
 import firebase from "firebase/app";
 import "firebase/auth";
 import {
@@ -16,6 +17,7 @@ import {getIntervaledOHLC, getOHLCData} from './../backend/fetchdata.js';
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss']
 })
+
 export class Tab1Page {
   public rsi = [
     { val: 'RSI Hourly', isChecked: true },
@@ -24,6 +26,7 @@ export class Tab1Page {
     { val: 'RSI Monthly', isChecked: false }
   ];
   constructor(
+    public http: HttpClient,
     public fireauth: AngularFireAuth,
     public afs: AngularFirestoreModule,
     public firestore: AngularFirestore
@@ -41,8 +44,7 @@ export class Tab1Page {
     });
   }
 
-
-  async addPreferences() {
+  addPreferences() {
     let userid = firebase.auth().currentUser.uid;
     let perferencesArray = new Array;
     let documentId;
@@ -96,6 +98,12 @@ export class Tab1Page {
         })
 
 
+    // http request to backend
+    this.http.post('http://localhost:8080/', {
+      preferences: perferencesArray
+    }).subscribe((response) => {
+      console.log(response);
+    });
   }
 
   updatePreferences() {
@@ -107,22 +115,16 @@ export class Tab1Page {
         perferencesArray.push(this.rsi[i].val);
       }
     }
-    // return new Promise<any>((resolve, reject) => {
-
-    //   this.firestore.collection('alerts').doc(userid).collection("alertsID").update({
-    //       preferences: perferencesArray
-    //     }
-    //   ).then(
-    //       (res) => {
-    //         documentId = res;
-    //         console.log(res);
-    //         resolve(res)
-    //       },
-    //       err => reject(err)
-    //     )
-    //     })
   }
 
+
+  deletePreferences() {
+
+  }
+
+  displayPreferences() {
+
+  }
 
   ngOnInit() {
     this.anonymouseSignIn();
