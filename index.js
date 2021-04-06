@@ -6,6 +6,12 @@ calls the functions in the funtions.js file.
 
 const admin = require('firebase-admin');
 const serviceAccount = require('./stock-key.json');
+var express = require('express');
+var cors = require('cors');
+
+var app2 = express();
+app2.use(cors({origin: '*'}));
+
 const alpha = require('alphavantage')({
   key: 'SRAGEGTDQSII8BQG'
 });
@@ -25,6 +31,30 @@ const {
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
+
+
+
+app2.get('/', async function (req, res) {
+  let indicators = ['1 hour'];
+  try {
+    let ohlcData = await getIntervaledOHLC('TSLA', '30min');
+    let ohlcIntervaledData = ohlcData[0];
+    let ohlcDailyData = ohlcData[1];
+
+    let results = await findPointsWithProfit(indicators, ohlcIntervaledData, ohlcDailyData, '30min', 12, 0.03);
+    let probProf = probOfProfit(results[0]);
+    let labels = results[1];
+    let graphData = results[2];
+    results[0] = probProf;
+
+    res.send(results);
+
+  }
+  catch(error) {
+    console.log(error);
+  }
+})
+app2.listen(3000);
 
 
 const app = express();
@@ -58,18 +88,27 @@ app.post('/', async function(req, res) {
 
 app.listen(process.env.PORT || 8080);
 
-async function run() {
-  let indicators = ['Daily', '1 hour', '4 hour'];
-  try {
-    let ohlcData = await getIntervaledOHLC('GME', '30min');
-    let ohlcIntervaledData = ohlcData[0];
-    let ohlcDailyData = ohlcData[1];
-    console.log(ohlcIntervaledData.length);
-    let results = await findPointsWithProfit(indicators, ohlcIntervaledData, ohlcDailyData, '30min', 12, 0.03);
-    probOfProfit(results);
-  }
-  catch(error) {
-    console.log(error);
-  }
-}
+
+// async function run() {
+
+//   let indicators = ['Daily'];
+//   try {
+//     let ohlcData = await getIntervaledOHLC('GME', '30min');
+//     let ohlcIntervaledData = ohlcData[0];
+//     let ohlcDailyData = ohlcData[1];
+
+//     let results = await findPointsWithProfit(indicators, ohlcDailyData, ohlcDailyData, '30min', 12, 0.03);
+//     probOfProfit(results[0]);
+//     let labels = results[1];
+//     let graphData = results[2];
+//     console.log(labels);
+//     console.log(graphData);
+
+//   }
+//   catch(error) {
+//     console.log(error);
+//   }
+// }
+
+//run();
 

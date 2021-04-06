@@ -1,0 +1,60 @@
+<html>
+<head>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  function getData() {
+        var url = 'http://localhost:3000/';
+        // Now send a request to your Node program
+        fetch(url).then(function(res) {
+           //document.getElementById("demo").innerHTML = res.text();
+           //console.log(res);
+           let results = res.json();
+           return results;
+        }).then(function(responseJson){
+          let labels = responseJson[1];
+          let graphData = responseJson[2];
+          let pointBackgroundColors = [];
+          for (let i = 0; i < graphData.length; i++) {
+              if (graphData[i] > 0.03) {
+                  pointBackgroundColors.push("#00FF00");
+              }
+              else if (graphData[i] < 0.03) {
+                  pointBackgroundColors.push("#FF0000");
+              }
+              else{
+                  pointBackgroundColors.push("#000000");
+              }
+          }
+          console.log(responseJson);
+          console.log(labels);
+           // Res will be a Response object.
+           // Use res.text() or res.json() to get the information that the Node program sent.
+           var ctx = document.getElementById('myChart').getContext('2d');
+
+           var myChart = new Chart(ctx, {
+               type: 'bar',
+               data: {
+                   labels: labels,
+                   datasets: [{
+                       label: 'Percentage Profit',
+                       data: graphData,
+                       backgroundColor: pointBackgroundColors,
+                       borderColor: pointBackgroundColors,
+                   }]
+               }
+           });
+           myChart.update();
+           document.getElementById("p1").innerHTML = responseJson[0];
+
+        });
+
+  }
+</script>
+</head>
+<body>
+<canvas id="myChart" width="400" height="400"></canvas>
+<p id="p1">Percentage Profit</p>
+<input type = "button" onclick = "getData()" value = "Display">
+</body>
+</html>

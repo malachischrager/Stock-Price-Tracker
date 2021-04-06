@@ -25,11 +25,12 @@
     "firebase": "^8.3.2",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
+    "xmlhttprequest": "^1.8.0",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1101.4",
-    "@angular/cli": "~11.1.4",
+    "@angular/cli": "11.1.4",
     "@angular/compiler": "~11.2.0",
     "@angular/compiler-cli": "~11.2.0",
     "@angular/language-service": "~11.2.0",
