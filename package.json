@@ -17,10 +17,11 @@
   },
   "homepage": "https://github.com/malachischrager/Stock-Price-Tracker#readme",
   "dependencies": {
+    "@angular/fire": "^6.1.4",
     "@firebase/firestore": "^2.1.6",
     "alphavantage": "^2.2.0",
     "datetime": "0.0.3",
-    "firebase": "^8.2.7",
+    "firebase": "^8.3.1",
     "firebase-admin": "^9.5.0",
     "iex-cloud": "^2.2.0",
     "node-iex-cloud": "^2.1.0",
