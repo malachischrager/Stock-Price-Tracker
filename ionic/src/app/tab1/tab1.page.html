@@ -20,29 +20,32 @@
   </ion-item>
 </ion-list>
 
-  <!-- <app-explore-container name="Tab 1 page"></app-explore-container> -->
-  <ion-label class = choose> Select RSI Timeframe: </ion-label>
-  <ion-select class = options multiple=true>
-      <ion-select-option>15 minutes</ion-select-option>
-      <ion-select-option>30 minutes</ion-select-option>
-      <ion-select-option>1 hour</ion-select-option>
-      <ion-select-option>4 hours</ion-select-option>
-      <ion-select-option>1 day</ion-select-option>
-  </ion-select>
 
   <button ion-button (click) = "addPreferences()" icon-start large round color="dark">
     <ion-icon name="star"></ion-icon>
     Add Alert
   </button>
 
-  <button ion-button (click) = "updatePreferences()" icon-start large round color="dark">
+  <button ion-button (click) = "displayPreferences()" icon-start large round color="dark">
     <ion-icon name="star"></ion-icon>
-    Update Alert
+    Display Preferences
   </button>
 
-  <button ion-button (click) = "deletePreferences()" icon-start large round color="dark">
-    <ion-icon name="star"></ion-icon>
-    Delete Alert
-  </button>
+  <div *ngIf="alerts" class="alert">
+    <div *ngFor="let alert of alerts | async">
+      {{alert.payload.doc.data().preferences}}
+
+
+      <button ion-button (click) = "updatePreferences(alert.payload.doc.id)" icon-start large round color="dark">
+        <ion-icon name="star"></ion-icon>
+        Update Alert
+      </button>
+    
+      <button ion-button (click) = "deletePreferences(alert.payload.doc.id)" icon-start large round color="dark">
+        <ion-icon name="star"></ion-icon>
+        Delete Alert
+      </button>
+    </div>
+  </div>
 
 </ion-content>

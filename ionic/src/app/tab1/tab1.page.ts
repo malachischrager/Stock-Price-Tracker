@@ -14,6 +14,8 @@ import "firebase/auth";
 })
 
 export class Tab1Page {
+
+  public alerts:any = undefined;
   public rsi = [
     { val: 'RSI Hourly', isChecked: true },
     { val: 'RSI Daily', isChecked: false },
@@ -82,14 +84,14 @@ export class Tab1Page {
 
 
     // http request to backend
-    this.http.post('http://localhost:8080/', {
-      preferences: perferencesArray
-    }).subscribe((response) => {
-      console.log(response);
-    });
+    // this.http.post('http://localhost:8080/', {
+    //   preferences: perferencesArray
+    // }).subscribe((response) => {
+    //   console.log(response);
+    // });
   }
 
-  updatePreferences() {
+  updatePreferences(id:any) {
     let userid = firebase.auth().currentUser.uid;
     let perferencesArray = new Array;
     let documentId;
@@ -98,14 +100,49 @@ export class Tab1Page {
         perferencesArray.push(this.rsi[i].val);
       }
     }
+
+    new Promise<any>((resolve, reject) => {
+
+      this.firestore.collection('alerts').doc(userid).collection("alertsID").doc(id).update({
+          preferences: perferencesArray
+        }
+      )  })
+
+    // new Promise<any>((resolve, reject) => {
+
+    //   this.firestore.collection('all_alerts').doc(id).collection("alertsID").add({
+    //       userID : userid,
+    //       preferences: perferencesArray
+    //     }
+    //   ) })
   }
 
 
-  deletePreferences() {
+  deletePreferences(id:any) {
 
+    let userid = firebase.auth().currentUser.uid;
+
+    new Promise<any>((resolve, reject) => {
+
+      this.firestore.collection('alerts').doc(userid).collection("alertsID").doc(id).delete();
+    })
+
+    // new Promise<any>((resolve, reject) => {
+
+    //   this.firestore.collection('all_alerts').doc(id).collection("alertsID")
+    // })
+   
   }
 
   displayPreferences() {
+    let userid = firebase.auth().currentUser.uid;
+    console.log(userid);
+    this.alerts = this.firestore.collection("alerts").doc(userid).collection("alertsID").snapshotChanges();
+    console.log(this.alerts.forEach(element => {
+      console.log(element);
+    })
+    
+    );
 
   }
 
