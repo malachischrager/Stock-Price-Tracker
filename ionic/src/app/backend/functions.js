@@ -154,15 +154,13 @@ async function getRSISignalDaily(ohlc, startDate, buyOrSell) {
 async function findPointsWithProfit(indicators, ohlcData, ohlcDailyData, interval, numCandles, profitThreshold) {
   let answers = [];
   let results = [];
-  let labels = [];
-  let graphData = [];
 
   // get all relevant OHLC data depending on input parameter needs
   for (let i = 0; i < ohlcData.length; i++) {
     currentData = ohlcData[i];
     currentTime = currentData.time;
     currentPrice = currentData.price;
-    labels.push(currentTime);
+
     // indicatorBooleans will hold buy or sell signals (0 or 1) for every interval indicator you originally input
     // interval indicators supports RSI 1 hour, RSI 4 hour, and RSI Daily currently
     let indicatorBooleans = [];
@@ -216,22 +214,17 @@ async function findPointsWithProfit(indicators, ohlcData, ohlcDailyData, interva
         // profit found, push true to results
         if(futurePrice > (1 + profitThreshold) * buyPrice){
           results.push({buyAt: ohlcData[i], sellAt: ohlcData[j], profitable: true, profit: futurePrice - buyPrice});
-          graphData.push((futurePrice-buyPrice)/buyPrice);
           break;
         }
 
         // end of numCandles, no profit, push false to results
         if(j == i + numCandles - 1){
           results.push({buyAt: ohlcData[i], sellAt: undefined, profitable: false, profit: 0});
-          graphData.push((futurePrice-buyPrice)/buyPrice);
         }
       }
     }
-    else{
-      graphData.push(0);
-    }
   }
-  return [results, labels, graphData];
+  return results;
 }
 
 /** calculates the profitability percentage given a results array returned from findPointsWithProfit
