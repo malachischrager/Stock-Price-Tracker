@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Router } from '@angular/router';
+
 import { HttpClient } from '@angular/common/http';
 import firebase from "firebase/app";
 import "firebase/auth";
@@ -26,8 +28,8 @@ export class Tab1Page {
     public http: HttpClient,
     public fireauth: AngularFireAuth,
     public afs: AngularFirestoreModule,
-    public firestore: AngularFirestore
-  ) {}
+    public firestore: AngularFirestore,
+    ) {}
 
   anonymouseSignIn() {
     return new Promise<any>((resolve, reject) => {
@@ -84,11 +86,13 @@ export class Tab1Page {
 
 
     // http request to backend
-    // this.http.post('http://localhost:8080/', {
-    //   preferences: perferencesArray
-    // }).subscribe((response) => {
-    //   console.log(response);
-    // });
+    this.http.post('http://localhost:8080/', {
+      preferences: perferencesArray
+    }).subscribe((response) => {
+      console.log(response);
+      localStorage.setItem('myData',JSON.stringify(response));
+
+    });
   }
 
   updatePreferences(id:any) {
@@ -107,6 +111,7 @@ export class Tab1Page {
           preferences: perferencesArray
         }
       )  })
+
 
     // new Promise<any>((resolve, reject) => {
 
@@ -131,7 +136,7 @@ export class Tab1Page {
 
     //   this.firestore.collection('all_alerts').doc(id).collection("alertsID")
     // })
-   
+
   }
 
   displayPreferences() {
@@ -141,7 +146,7 @@ export class Tab1Page {
     console.log(this.alerts.forEach(element => {
       console.log(element);
     })
-    
+
     );
 
   }

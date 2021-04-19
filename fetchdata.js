@@ -65,11 +65,11 @@ async function getIntervaledOHLC(symbol, interval) {
 
   // console.log(ohlcData);
   // obtaining daily OHLC daily 15 days prior to minute start time
-  // let minuteStartTime = new Date(ohlcData[0]['time']);
-  // let dailyOHLC = await getDailyOHLC(minuteStartTime, symbol);
+  let minuteStartTime = new Date(ohlcData[0]['time']);
+  let dailyOHLC = await getDailyOHLC(minuteStartTime, symbol);
 
-  // return [ ohlcData, dailyOHLC ];
-  return ohlcData;
+  return [ ohlcData, dailyOHLC ];
+  //return ohlcData;
 }
 
 /**

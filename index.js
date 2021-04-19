@@ -15,9 +15,7 @@ app2.use(cors({origin: '*'}));
 const alpha = require('alphavantage')({
   key: 'SRAGEGTDQSII8BQG'
 });
-const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors');
 const {
   findPointsWithProfit,
   probOfProfit
@@ -63,26 +61,62 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.post('/', async function(req, res) {
-  let indicators = Object.values(req.body)[0];
+  let preferences = Object.values(req.body)[0];
   let response = {};
-  for(let i = 0; i < indicators.length; ++i){
-    switch(indicators[i]) {
+
+  let ohlcData = await getIntervaledOHLC('TSLA', '30min');
+  let ohlcIntervaledData = ohlcData[0];
+  let ohlcDailyData = ohlcData[1];
+  let indicators = [];
+  for(let i = 0; i < preferences.length; ++i){
+    switch(preferences[i]) {
       case 'RSI Hourly':
-        response['hourly'] = await getIntervaledOHLC('GME', '60min');;
+        indicators.push('1 hour');
         break;
       case 'RSI Daily':
-        response['daily'] = "in progress";
+        indicators.push('Daily');
         break;
       case 'RSI 4 Hours':
-        response['4 hours'] = "in progress";
-        break;
-      case 'RSI Monthly':
-        response['monthly'] = "in progress";
+        indicators.push('4 hour');
         break;
       default:
-        res.json("unknown indicator detected")
+        res.json("unknown indicator detected");
     }
   }
+  let results = await findPointsWithProfit(indicators, ohlcIntervaledData, ohlcDailyData, '30min', 20, 0.03);
+  let labels = results[1];
+  let graphData = results[2];
+  let probProf = probOfProfit(results[0]);
+  response['Labels'] = labels;
+  response['Graph Data'] = graphData;
+  response['Interval Data'] = ohlcIntervaledData;
+  response['Daily Data'] = ohlcDailyData;
+  response['Results'] = results;
+  response['Probability of Profit'] = probProf;
+  response['Indicators'] = indicators;
+
+
+  // console.log('hello');
+  // console.log(probProf);
+  // for(let i = 0; i < indicators.length; ++i){
+  //   console.log(indicators[i]);
+    // switch(indicators[i]) {
+    //   case 'RSI Hourly':
+    //     response['hourly'] = await getIntervaledOHLC('GME', '60min');;
+    //     break;
+    //   case 'RSI Daily':
+    //     response['daily'] = "in progress";
+    //     break;
+    //   case 'RSI 4 Hours':
+    //     response['4 hours'] = "in progress";
+    //     break;
+    //   case 'RSI Monthly':
+    //     response['monthly'] = "in progress";
+    //     break;
+    //   default:
+    //     res.json("unknown indicator detected")
+  //   }
+  // }
   res.json(response);
 });
 
@@ -91,24 +125,23 @@ app.listen(process.env.PORT || 8080);
 
 // async function run() {
 
-//   let indicators = ['Daily'];
-//   try {
-//     let ohlcData = await getIntervaledOHLC('GME', '30min');
-//     let ohlcIntervaledData = ohlcData[0];
-//     let ohlcDailyData = ohlcData[1];
-
-//     let results = await findPointsWithProfit(indicators, ohlcDailyData, ohlcDailyData, '30min', 12, 0.03);
-//     probOfProfit(results[0]);
-//     let labels = results[1];
-//     let graphData = results[2];
-//     console.log(labels);
-//     console.log(graphData);
-
-//   }
+  // let indicators = ['Daily'];
+  // try {
+    // let ohlcData = await getIntervaledOHLC('GME', '30min');
+    // let ohlcIntervaledData = ohlcData[0];
+    // let ohlcDailyData = ohlcData[1];
+  //
+    // let results = await findPointsWithProfit(indicators, ohlcDailyData, ohlcDailyData, '30min', 12, 0.03);
+    // probOfProfit(results[0]);
+  //   let labels = results[1];
+  //   let graphData = results[2];
+  //   console.log(labels);
+  //   console.log(graphData);
+  //
+  // }
 //   catch(error) {
 //     console.log(error);
 //   }
 // }
 
 //run();
-

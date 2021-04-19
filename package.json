@@ -17,11 +17,8 @@
   },
   "homepage": "https://github.com/malachischrager/Stock-Price-Tracker#readme",
   "dependencies": {
-<<<<<<< HEAD
     "@angular/fire": "^6.1.4",
-=======
     "@chancey/iex-cloud": "^2.2.3",
->>>>>>> cea8c39d81be63159bcbae1d9f592dfa3d41f9c2
     "@firebase/firestore": "^2.1.6",
     "ajax": "0.0.4",
     "ajax-client": "^1.5.6",
@@ -34,12 +31,8 @@
     "chartjs-node-canvas": "^3.1.0",
     "cors": "^2.8.5",
     "datetime": "0.0.3",
-<<<<<<< HEAD
     "firebase": "^8.3.1",
-=======
     "express": "^4.17.1",
-    "firebase": "^8.2.7",
->>>>>>> cea8c39d81be63159bcbae1d9f592dfa3d41f9c2
     "firebase-admin": "^9.5.0",
     "iex-cloud": "^2.2.0",
     "jquery": "^3.6.0",
