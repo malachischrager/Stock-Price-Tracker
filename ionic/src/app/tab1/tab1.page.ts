@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Router } from '@angular/router';
+
 import { HttpClient } from '@angular/common/http';
 import firebase from "firebase/app";
 import "firebase/auth";
@@ -14,6 +16,8 @@ import "firebase/auth";
 })
 
 export class Tab1Page {
+
+  public alerts:any = undefined;
   public rsi = [
     { val: 'RSI Hourly', isChecked: true },
     { val: 'RSI Daily', isChecked: false },
@@ -24,8 +28,8 @@ export class Tab1Page {
     public http: HttpClient,
     public fireauth: AngularFireAuth,
     public afs: AngularFirestoreModule,
-    public firestore: AngularFirestore
-  ) {}
+    public firestore: AngularFirestore,
+    ) {}
 
   anonymouseSignIn() {
     return new Promise<any>((resolve, reject) => {
@@ -86,10 +90,12 @@ export class Tab1Page {
       preferences: perferencesArray
     }).subscribe((response) => {
       console.log(response);
+      localStorage.setItem('myData',JSON.stringify(response));
+
     });
   }
 
-  updatePreferences() {
+  updatePreferences(id:any) {
     let userid = firebase.auth().currentUser.uid;
     let perferencesArray = new Array;
     let documentId;
@@ -98,14 +104,50 @@ export class Tab1Page {
         perferencesArray.push(this.rsi[i].val);
       }
     }
+
+    new Promise<any>((resolve, reject) => {
+
+      this.firestore.collection('alerts').doc(userid).collection("alertsID").doc(id).update({
+          preferences: perferencesArray
+        }
+      )  })
+
+
+    // new Promise<any>((resolve, reject) => {
+
+    //   this.firestore.collection('all_alerts').doc(id).collection("alertsID").add({
+    //       userID : userid,
+    //       preferences: perferencesArray
+    //     }
+    //   ) })
   }
 
 
-  deletePreferences() {
+  deletePreferences(id:any) {
+
+    let userid = firebase.auth().currentUser.uid;
+
+    new Promise<any>((resolve, reject) => {
+
+      this.firestore.collection('alerts').doc(userid).collection("alertsID").doc(id).delete();
+    })
+
+    // new Promise<any>((resolve, reject) => {
+
+    //   this.firestore.collection('all_alerts').doc(id).collection("alertsID")
+    // })
 
   }
 
   displayPreferences() {
+    let userid = firebase.auth().currentUser.uid;
+    console.log(userid);
+    this.alerts = this.firestore.collection("alerts").doc(userid).collection("alertsID").snapshotChanges();
+    console.log(this.alerts.forEach(element => {
+      console.log(element);
+    })
+
+    );
 
   }
 
