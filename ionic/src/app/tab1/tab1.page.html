@@ -13,6 +13,21 @@
     </ion-toolbar>
   </ion-header>
 
+<ion-form method = "get">
+    <ion-label>Stock  Ticker: </ion-label>
+    <ion-input type = "text" id = "ticker" name  = "ticker" placeholder="ex. TSLA"></ion-input>
+
+    <ion-label>Number of Candles: </ion-label>
+    <ion-input type = "text" id = "numCandles" name  = "numCandles" placeholder="ex. 8"></ion-input>
+
+    <ion-label>Threshold: </ion-label>
+    <ion-input type = "text" id = "threshold" name  = "threshold" placeholder="ex. 0.7"></ion-input>
+    <button icon-start large round color="dark">
+      <ion-icon name="star"></ion-icon>
+      Submit
+    </button>
+</ion-form>  
+
 <ion-list>
   <ion-item *ngFor="let entry of rsi">
     <ion-label>{{entry.val}}</ion-label>
