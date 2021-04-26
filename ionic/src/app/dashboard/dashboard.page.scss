@@ -1,0 +1,50 @@
+
+
+$segment-button-ios-background-color-activated: red;
+
+.timeButtons {
+    // width: 95%;
+    margin-top: 10px;
+    // --padding-start: 10px;
+    // margin-left: 10px;
+    // margin-right: 10px; 
+
+}
+
+
+.info-boxes {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+
+    height: 150px;
+}
+
+.earned-this-period {
+    text-align: center;
+    --color: white;
+    width: 47%;
+}
+
+.trades-this-period {
+    text-align: center;
+    --color: white;
+    width: 47%;
+}
+
+
+
+.graph-structure {
+    display: flex;
+    flex-direction: row;
+
+    border-style: solid;
+    border-color: white;
+    border-width: 4px;
+
+    height: 350px;
+    width: 97%;
+
+    margin-left: 1%;
+
+}

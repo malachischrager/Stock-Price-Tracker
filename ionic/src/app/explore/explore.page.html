@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Explore</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-searchbar (ionInput)="searchStocks($event)" showCancelButton="always"></ion-searchbar>
+
+  <ion-list>
+    <ion-item (click)='seeStockDetails($event)' *ngFor="let stock of stockList">
+      <ion-label >
+        <ion-text class="stock-text">
+          <h3> {{ stock['1. symbol'] }} </h3>
+        </ion-text>
+
+        <ion-text>
+          <p> {{ stock['2. name'] }} </p>
+        </ion-text>
+      </ion-label>
+    </ion-item>
+
+  </ion-list>
+</ion-content>

@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Dashboard</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+
+  <ion-segment class="timeButtons" color="secondary" [(ngModel)]="selectedTimePeriod" >
+    <ion-segment-button value="1D">
+      1D
+    </ion-segment-button>
+    <ion-segment-button value="1W">
+      1W
+    </ion-segment-button>
+    <ion-segment-button value="1M">
+      1M
+    </ion-segment-button>
+    <ion-segment-button value="3M">
+      3M
+    </ion-segment-button>
+    <ion-segment-button value="1Y">
+      1Y
+    </ion-segment-button>
+    <ion-segment-button value="All">
+      All
+    </ion-segment-button>
+  </ion-segment>
+
+  <div class="info-boxes">
+    <ion-card class="earned-this-period">
+      <ion-card-header>
+        Earned This Period
+      </ion-card-header>
+    
+      <ion-card-content>
+        $152.23
+      </ion-card-content>
+    </ion-card>
+  
+    <ion-card class="trades-this-period">
+      <ion-card-header>
+        Positive Trades This Period
+      </ion-card-header>
+    
+      <ion-card-content>
+        5
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <div class="graph-structure">
+
+
+  </div>
+
+
+  <ion-button (click)="viewAllRecentTrades()">Open Recent Trades with Tab Bar</ion-button>
+</ion-content>
