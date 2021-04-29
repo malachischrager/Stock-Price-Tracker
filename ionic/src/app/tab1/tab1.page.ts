@@ -31,20 +31,23 @@ export class Tab1Page {
     public firestore: AngularFirestore,
     ) {}
 
-  anonymouseSignIn() {
-    return new Promise<any>((resolve, reject) => {
-      this.fireauth.signInAnonymously().then((data) => {
-        resolve(data);
-      }).catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        reject(`login failed ${error.message}`);
-      });
-    });
+  async anonymouseSignIn() {
+
+    await this.fireauth.signInAnonymously();
+    // return new Promise<any>((resolve, reject) => {
+    //   this.fireauth.signInAnonymously().then((data) => {
+    //     resolve(data);
+    //   }).catch((error) => {
+    //     const errorCode = error.code;
+    //     const errorMessage = error.message;
+    //     reject(`login failed ${error.message}`);
+    //   });
+    // });
   }
 
-  addPreferences() {
+  async addPreferences() {
     let userid = firebase.auth().currentUser.uid;
+    console.log(userid);
     let perferencesArray = new Array;
     let documentId;
     for(let i = 0; i < this.rsi.length; i++) {
@@ -53,36 +56,38 @@ export class Tab1Page {
       }
     }
 
-    new Promise<any>((resolve, reject) => {
+    const res = await this.firestore.collection('alerts').doc(userid).collection("alertsID").add({
+      preferences: perferencesArray
+    });
+    console.log(res);
+    //   this.firestore.collection('alerts').doc(userid).collection("alertsID").add({
+    //       preferences: perferencesArray
+    //     }
+    //   ).then(
+    //       (res) => {
+    //         documentId = res;
+    //         console.log(res);
+    //         resolve(res)
+    //       },
+    //       err => reject(err)
+    //     )
+    //     })
 
-      this.firestore.collection('alerts').doc(userid).collection("alertsID").add({
-          preferences: perferencesArray
-        }
-      ).then(
-          (res) => {
-            documentId = res;
-            console.log(res);
-            resolve(res)
-          },
-          err => reject(err)
-        )
-        })
+    // new Promise<any>((resolve, reject) => {
 
-    new Promise<any>((resolve, reject) => {
-
-      this.firestore.collection('all_alerts').doc().collection("alertsID").add({
-          userID : userid,
-          preferences: perferencesArray
-        }
-      ).then(
-          (res) => {
-            documentId = res;
-            console.log(res);
-            resolve(res)
-          },
-          err => reject(err)
-        )
-        })
+    //   this.firestore.collection('all_alerts').doc().collection("alertsID").add({
+    //       userID : userid,
+    //       preferences: perferencesArray
+    //     }
+    //   ).then(
+    //       (res) => {
+    //         documentId = res;
+    //         console.log(res);
+    //         resolve(res)
+    //       },
+    //       err => reject(err)
+    //     )
+    //     })
 
 
     // http request to backend
