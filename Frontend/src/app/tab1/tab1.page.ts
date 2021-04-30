@@ -16,6 +16,10 @@ import "firebase/auth";
 })
 
 export class Tab1Page {
+  ticker: string = "";
+  buyOrSell: string = "";
+  numCandles: string = "";
+  profitThreshold: string = "";
 
   public alerts:any = undefined;
   public rsi = [
@@ -57,7 +61,7 @@ export class Tab1Page {
     }
 
     const res = await this.firestore.collection('alerts').doc(userid).collection("alertsID").add({
-      preferences: perferencesArray
+      preferences: perferencesArray,
     });
     console.log(res);
     //   this.firestore.collection('alerts').doc(userid).collection("alertsID").add({
@@ -92,7 +96,11 @@ export class Tab1Page {
 
     // http request to backend
     this.http.post('http://localhost:8080/', {
-      preferences: perferencesArray
+      preferences: perferencesArray,
+      ticker: this.ticker,
+      buyOrSell: this.buyOrSell,
+      numCandles: this.numCandles,
+      profitThreshold: this.profitThreshold
     }).subscribe((response) => {
       console.log(response);
       localStorage.setItem('myData',JSON.stringify(response));

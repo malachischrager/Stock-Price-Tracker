@@ -151,7 +151,7 @@ async function getRSISignalDaily(ohlc, startDate, buyOrSell) {
      }
    ]
  */
-async function findPointsWithProfit(indicators, ohlcData, ohlcDailyData, interval, numCandles, profitThreshold) {
+async function findPointsWithProfit(indicators, ohlcData, ohlcDailyData, interval, numCandles, profitThreshold, buyOrSell) {
   let answers = [];
   let results = [];
   let labels = [];
@@ -173,7 +173,7 @@ async function findPointsWithProfit(indicators, ohlcData, ohlcDailyData, interva
       // depending on the interval indicator, call getRSISignal function and it will return a 0 or 1 depending on if you should make an action
       if(indicator == '1 hour'){
         try {
-          bool = await getRSISignalByHour(ohlcData, i, interval, 'buy', 1);
+          bool = await getRSISignalByHour(ohlcData, i, interval, buyOrSell, 1);
         }
         catch(error){
           console.log(error);
@@ -181,7 +181,7 @@ async function findPointsWithProfit(indicators, ohlcData, ohlcDailyData, interva
       }
       else if(indicator == '4 hour'){
         try {
-          bool = await getRSISignalByHour(ohlcData, i, interval, 'buy', 4);
+          bool = await getRSISignalByHour(ohlcData, i, interval, buyOrSell, 4);
         }
         catch(error){
           console.log(error);
@@ -189,7 +189,7 @@ async function findPointsWithProfit(indicators, ohlcData, ohlcDailyData, interva
       }
       else if(indicator == 'Daily'){
         try {
-          bool = await getRSISignalDaily(ohlcDailyData, currentTime, 'buy');
+          bool = await getRSISignalDaily(ohlcDailyData, currentTime, buyOrSell);
         }
         catch(error){
           console.log(error);
@@ -250,7 +250,7 @@ function probOfProfit(results) {
 
   prob = (profits) / (profits + losses) * 100;
   console.log("Profits:", profits, "Losses:", losses, "Probability of profit (in percent):", prob);
-  return prob;
+  return [prob, profits, losses];
 }
 
 module.exports = {

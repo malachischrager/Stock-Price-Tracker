@@ -9,34 +9,46 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
+      <ion-title size="large">Configuration</ion-title>
     </ion-toolbar>
   </ion-header>
 
 <ion-form method = "get">
-    <ion-label>Stock  Ticker: </ion-label>
-    <ion-input type = "text" id = "ticker" name  = "ticker" placeholder="ex. TSLA"></ion-input>
+  <ion-list>
+    <ion-item *ngFor="let entry of rsi">
+      <ion-label>{{entry.val}}</ion-label>
+      <ion-checkbox slot="end" [(ngModel)]="entry.isChecked"></ion-checkbox>
+    </ion-item>
+  </ion-list>
+  <ion-grid>
+    <ion-row>
+      <ion-col size ='6'>
+        <ion-label>Stock  Ticker: </ion-label>
+        <ion-input [(ngModel)]="ticker" type = "text" id = "ticker" name  = "ticker" placeholder="ex. TSLA" class = input_field></ion-input>
+      </ion-col>
+      <ion-col size ='6'>
+        <ion-label>Buy/Sell Signal: </ion-label>
+        <ion-input [(ngModel)]="buyOrSell" type = "text" id = "buySell" name  = "buySell" placeholder="ex. buy or sell" class = input_field></ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size ='6'>
+        <ion-label>Number of Candles: </ion-label>
+        <ion-input [(ngModel)]="numCandles" type = "text" id = "numCandles" name  = "numCandles" placeholder="ex. 8" class = input_field></ion-input>
+      </ion-col>
+      <ion-col size ='6'>
+        <ion-label>Threshold: </ion-label>
+        <ion-input [(ngModel)]="profitThreshold" type = "text" id = "threshold" name  = "threshold" placeholder="ex. 0.7" class = input_field></ion-input>
+      </ion-col>
+    </ion-row>
+    <ion-row class = submit-row>
+      <button ion-button (click) = "addPreferences()" icon-start large round color="dark" class = submit>
+        Submit
+      </button>
+    </ion-row>
 
-    <ion-label>Buy/Sell Signal: </ion-label>
-    <ion-input type = "text" id = "buySell" name  = "buySell" placeholder="ex. buy or sell"></ion-input>
-
-    <ion-label>Number of Candles: </ion-label>
-    <ion-input type = "text" id = "numCandles" name  = "numCandles" placeholder="ex. 8"></ion-input>
-
-    <ion-label>Threshold: </ion-label>
-    <ion-input type = "text" id = "threshold" name  = "threshold" placeholder="ex. 0.7"></ion-input>
-    <button icon-start large round color="dark">
-      <ion-icon name="star"></ion-icon>
-      Submit
-    </button>
-</ion-form>  
-
-<ion-list>
-  <ion-item *ngFor="let entry of rsi">
-    <ion-label>{{entry.val}}</ion-label>
-    <ion-checkbox slot="end" [(ngModel)]="entry.isChecked"></ion-checkbox>
-  </ion-item>
-</ion-list>
+  </ion-grid>
+</ion-form>
 
 
   <button ion-button (click) = "addPreferences()" icon-start large round color="dark">

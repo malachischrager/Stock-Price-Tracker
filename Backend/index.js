@@ -4,7 +4,6 @@ database, gets the data from the API data from Alphavantage, and
 calls the functions in the funtions.js file.
 ---------------------------------------------------------------*/
 
-const admin = require('firebase-admin');
 const serviceAccount = require('./stock-key.json');
 var express = require('express');
 var cors = require('cors');
@@ -25,10 +24,6 @@ const {
   getIntervaledOHLC,
   getOHLCData,
 } = require('./fetchdata');
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
 
 
 
@@ -62,13 +57,23 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.post('/', async function(req, res) {
   let preferences = Object.values(req.body)[0];
+  let ticker = Object.values(req.body)[1];
+  let buyOrSell = Object.values(req.body)[2];
+  let numCandles = Object.values(req.body)[3];
+  let profitThreshold = Object.values(req.body)[4];
+
+  numCandles = parseInt(numCandles);
+  profitThreshold = parseFloat(profitThreshold);
+
+  console.log(ticker + " " + buyOrSell + " " + numCandles + " " + profitThreshold);
   let response = {};
 
-  let ohlcData = await getIntervaledOHLC('TSLA', '30min');
+  let ohlcData = await getIntervaledOHLC(ticker, '30min');
   let ohlcIntervaledData = ohlcData[0];
   let ohlcDailyData = ohlcData[1];
   let indicators = [];
   for(let i = 0; i < preferences.length; ++i){
+    console.log(preferences[i]);
     switch(preferences[i]) {
       case 'RSI Hourly':
         indicators.push('1 hour');
@@ -83,16 +88,24 @@ app.post('/', async function(req, res) {
         res.json("unknown indicator detected");
     }
   }
-  let results = await findPointsWithProfit(indicators, ohlcIntervaledData, ohlcDailyData, '30min', 20, 0.03);
+  let results = await findPointsWithProfit(indicators, ohlcIntervaledData, ohlcDailyData, '30min', numCandles, profitThreshold, buyOrSell);
   let labels = results[1];
   let graphData = results[2];
-  let probProf = probOfProfit(results[0]);
+  let probProfData = probOfProfit(results[0]);
+  let probProf = probProfData[0];
+  let profits = probProfData[1];
+  let losses = probProfData[2];
+  response['Ticker'] = ticker;
+  response['NumCandles'] = numCandles;
+  response['ProfitThreshold'] = profitThreshold;
   response['Labels'] = labels;
   response['Graph Data'] = graphData;
   response['Interval Data'] = ohlcIntervaledData;
   response['Daily Data'] = ohlcDailyData;
   response['Results'] = results;
   response['Probability of Profit'] = probProf;
+  response['Profits'] = profits;
+  response['Losses'] = losses;
   response['Indicators'] = indicators;
 
 
