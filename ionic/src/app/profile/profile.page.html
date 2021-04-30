@@ -5,5 +5,45 @@
 </ion-header>
 
 <ion-content>
+  <div class="profile_layout">
+    <div class="input_fields">
 
+      <ion-item lines="none" class="ticker_input">
+        <!-- <ion-label position="floating">Floating Label</ion-label> -->
+        <ion-input placeholder="Ticker"></ion-input>
+      </ion-item>
+
+      <ion-item lines="none" class="candle_input">
+        <!-- <ion-label position="floating">Floating Label</ion-label> -->
+        <ion-input placeholder="Candles"></ion-input>
+      </ion-item>
+
+      <ion-item lines="none" class="profit_threshold">
+        <!-- <ion-label position="floating">Floating Label</ion-label> -->
+        <ion-input placeholder="Profit Threshold"></ion-input>
+      </ion-item>
+
+      <div class="submit">
+        Submit
+      </div>
+      
+    </div>
+
+    <!-- Graph Goes here -->
+    <div class="rsi_graph">
+
+
+    </div>
+
+    <!-- RSI Selections -->
+    <div class="rsi_selection_container">
+      <ion-button shape="round">Hourly</ion-button>
+
+      <ion-button shape="round">4 Hourly</ion-button>
+
+      <ion-button shape="round">Daily</ion-button>
+
+    </div>
+
+  </div>
 </ion-content>
