@@ -24,8 +24,18 @@
 
 }
 
+.submit-row{
+  margin-top: 20px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+.submit{
+  width: 80%;
+  height: 30px;
+}
 ion-input {
     height: 30px;
-    width: 150px;
+    width: 100%;
+
     border-style: groove;
 }

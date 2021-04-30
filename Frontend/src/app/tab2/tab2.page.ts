@@ -11,6 +11,12 @@ export class Tab2Page {
   @ViewChild('barChart') barChart;
 
   public bars:any = undefined;
+  public ticker:string = "";
+  public numCandles:string = "";
+  public profitThreshold:string = "";
+  public profits:string = "";
+  public losses:string = "";
+  public probProfit:string = "";
   colorArray: any;
 
   constructor() {
@@ -19,8 +25,19 @@ export class Tab2Page {
     let data = JSON.parse(localStorage.getItem('myData'));
     let labels = data['Labels'];
     let graphData = data['Graph Data'];
+    let tickerVal = data['Ticker'];
+    let numCandlesVal = data['NumCandles'];
+    let profitThresholdVal = data['ProfitThreshold'];
+    let probProfitVal = data['Probability of Profit'];
+    let profitsVal = data['Profits'];
+    let lossesVal = data['Losses'];
     this.createBarChart(labels, graphData);
-
+    this.ticker = tickerVal;
+    this.numCandles = numCandlesVal;
+    this.profitThreshold = profitThresholdVal;
+    this.profits = profitsVal;
+    this.losses = lossesVal;
+    this.probProfit = probProfitVal;
     console.log("Did data load? : ", data);
   }
 
