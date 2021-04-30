@@ -108,7 +108,7 @@ export class Tab1Page {
     });
   }
 
-  updatePreferences(id:any) {
+  async updatePreferences(id:any) {
     let userid = firebase.auth().currentUser.uid;
     let perferencesArray = new Array;
     let documentId;
@@ -118,12 +118,11 @@ export class Tab1Page {
       }
     }
 
-    new Promise<any>((resolve, reject) => {
-
-      this.firestore.collection('alerts').doc(userid).collection("alertsID").doc(id).update({
+    
+    const res = await this.firestore.collection('alerts').doc(userid).collection("alertsID").doc(id).update({
           preferences: perferencesArray
         }
-      )  })
+      );
 
 
     // new Promise<any>((resolve, reject) => {
@@ -136,14 +135,12 @@ export class Tab1Page {
   }
 
 
-  deletePreferences(id:any) {
+  async deletePreferences(id:any) {
 
     let userid = firebase.auth().currentUser.uid;
 
-    new Promise<any>((resolve, reject) => {
+    const res = await this.firestore.collection('alerts').doc(userid).collection("alertsID").doc(id).delete();
 
-      this.firestore.collection('alerts').doc(userid).collection("alertsID").doc(id).delete();
-    })
 
     // new Promise<any>((resolve, reject) => {
 

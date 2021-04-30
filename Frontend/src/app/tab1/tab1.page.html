@@ -42,39 +42,44 @@
       </ion-col>
     </ion-row>
     <ion-row class = submit-row>
-      <button ion-button (click) = "addPreferences()" icon-start large round color="dark" class = submit>
+      <ion-button ion-button (click) = "addPreferences()"  color="success" class = submit>
         Submit
-      </button>
+      </ion-button>
     </ion-row>
 
   </ion-grid>
 </ion-form>
 
+  <div class="addDisplayAlert">
+    <ion-button (click) = "addPreferences()"  class="updateDeleteSpace">
+      <ion-icon name="star" class="starIcon"></ion-icon>
+      Add Alert
+    </ion-button>
 
-  <button ion-button (click) = "addPreferences()" icon-start large round color="dark">
-    <ion-icon name="star"></ion-icon>
-    Add Alert
-  </button>
 
-  <button ion-button (click) = "displayPreferences()" icon-start large round color="dark">
-    <ion-icon name="star"></ion-icon>
-    Display Preferences
-  </button>
+    <ion-button (click) = "displayPreferences()" color="secondary" class="updateDeleteSpace">
+      <ion-icon name="star" class="starIcon"></ion-icon>
+      Display Preferences
+    </ion-button>
+
+  </div>
 
   <div *ngIf="alerts" class="alert">
     <div *ngFor="let alert of alerts | async">
-      {{alert.payload.doc.data().preferences}}
+      <div class = "alertText">
+        {{alert.payload.doc.data().preferences}}
+      </div>
 
-
-      <button ion-button (click) = "updatePreferences(alert.payload.doc.id)" icon-start large round color="dark">
-        <ion-icon name="star"></ion-icon>
-        Update Alert
-      </button>
-
-      <button ion-button (click) = "deletePreferences(alert.payload.doc.id)" icon-start large round color="dark">
-        <ion-icon name="star"></ion-icon>
-        Delete Alert
-      </button>
+      <div class = "updateDelete">
+        <ion-button (click) = "updatePreferences(alert.payload.doc.id)" color="warning" class="updateDeleteSpace">
+          <ion-icon name="star" class="starIcon"></ion-icon>
+          Update Alert
+        </ion-button>
+        <ion-button ion-button (click) = "deletePreferences(alert.payload.doc.id)" color="danger" class="updateDeleteSpace">
+          <ion-icon name="star" class="starIcon"></ion-icon>
+          Delete Alert
+        </ion-button>
+      </div>
     </div>
   </div>
 </ion-content>
