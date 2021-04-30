@@ -192,4 +192,6 @@ function csvToJSON(csv){
 module.exports = {
   getIntervaledOHLC,
   getOHLCData,
+  parseRelevantOHLCMinuteData,
+  csvToJSON
 };

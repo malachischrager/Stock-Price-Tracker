@@ -255,5 +255,7 @@ function probOfProfit(results) {
 
 module.exports = {
   probOfProfit,
-  findPointsWithProfit
+  findPointsWithProfit,
+  getRSISignalByHour,
+  getRSISignalDaily
 };
