@@ -1,5 +1,5 @@
 # Stock Price Tracker
-### Eric Zhan, Gabriel Dalessandro, Jason Hong, John La, Malachi Schrager
+***Eric Zhan, Gabriel Dalessandro, Jason Hong, John La, Malachi Schrager***
 
 
 ## Overall Structure
