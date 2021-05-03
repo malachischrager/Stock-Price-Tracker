@@ -15,9 +15,9 @@ The frontend is written using the ionic framework with angular components.  It a
 ***Index.js:*** This is considered the main launching point of our backend. Index.js launches an express server using cors that will wait for a response from the front end. When the user inputs the configuration on the front end, it will pass these parameters over to index.js that will retrieve appropriate OHLC data, pass it over to the our calculation function, FindPointsWithProfit(), and then calculate the analytics behind the given points. Finally, it will return relevant data over to the front end, where it will be used to generate the results tab with a graph.
 
 ***Functions.js:*** All of our relevant backend functions are stored in Functions.js. 
-
+```
 getRSISignalByHour()
-`/** given intervaled ohlc data, this function will calculate RSI for input point (distinguished by the index)`
+/** given intervaled ohlc data, this function will calculate RSI for input point (distinguished by the index)`
  * interval can either be 1 or 60 or 1440 (representing minutes)
  * @param ohlc: array
  * @param index: int index of starting point`
@@ -53,7 +53,7 @@ findPointsWithProfit()
 
 probOfProfit()
 Calculates the profitability percentage given a results array returned from findPointsWithProfit
-
+```
 ## Backend Tests
 There are unit tests for the back end functionality in the test directory: Backend/test/backendtest.js. To run the tests, within the test directory, run npm test. The tests utilize a Javascript framework for Node.js programs called Mocha. This framework makes it clear to any code reader through a description of what each test does, what it expects to see as each output, and finally an assertion statement. The functions that were tested were all of the functions that were included in the functions.js file. 
 
