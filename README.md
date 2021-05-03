@@ -17,7 +17,7 @@ The frontend is written using the ionic framework with angular components.  It a
 ***Functions.js:*** All of our relevant backend functions are stored in Functions.js. 
 
 getRSISignalByHour()
-/** given intervaled ohlc data, this function will calculate RSI for input point (distinguished by the index)
+`/** given intervaled ohlc data, this function will calculate RSI for input point (distinguished by the index)`
  * interval can either be 1 or 60 or 1440 (representing minutes)
  * @param ohlc: array
  * @param index: int index of starting point`
