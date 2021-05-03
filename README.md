@@ -1,5 +1,5 @@
 # Stock Price Tracker
-###Eric Zhan, Gabriel Dalessandro, Jason Hong, John La, Malachi Schrager
+### Eric Zhan, Gabriel Dalessandro, Jason Hong, John La, Malachi Schrager
 
 
 ## Overall Structure
@@ -10,11 +10,11 @@ The backend is written in Node.js and is used to gather data from the API Alpha 
 The frontend is written using the ionic framework with angular components.  It allows the user to select which time frame for RSI they want to measure and add that to their alert preferences.  These alert preferences are being stored in firebase.  There is no set login page.  Instead, the user is anonymously logged in and their user ID is stored along with their preferences.  On the UI, they can add, update, and delete their RSI preferences.
 
 ## Backend
-Chart.js: This file contains the functionality for creating and displaying the chart on the front end. Chartjs is an NPM module and what we use to create our results graph.
+***Chart.js:*** This file contains the functionality for creating and displaying the chart on the front end. Chartjs is an NPM module and what we use to create our results graph.
 
-Index.js: This is considered the main launching point of our backend. Index.js launches an express server using cors that will wait for a response from the front end. When the user inputs the configuration on the front end, it will pass these parameters over to index.js that will retrieve appropriate OHLC data, pass it over to the our calculation function, FindPointsWithProfit(), and then calculate the analytics behind the given points. Finally, it will return relevant data over to the front end, where it will be used to generate the results tab with a graph.
+***Index.js:*** This is considered the main launching point of our backend. Index.js launches an express server using cors that will wait for a response from the front end. When the user inputs the configuration on the front end, it will pass these parameters over to index.js that will retrieve appropriate OHLC data, pass it over to the our calculation function, FindPointsWithProfit(), and then calculate the analytics behind the given points. Finally, it will return relevant data over to the front end, where it will be used to generate the results tab with a graph.
 
-Functions.js: All of our relevant backend functions are stored in Functions.js. 
+***Functions.js:*** All of our relevant backend functions are stored in Functions.js. 
 
 getRSISignalByHour()
 /** given intervaled ohlc data, this function will calculate RSI for input point (distinguished by the index)
@@ -59,7 +59,6 @@ There are unit tests for the back end functionality in the test directory: Backe
 
 ## Frontend
 Within the source/app directory we have the tab angular components.  The Tab1 angular component contains the main page and functionality for adding, removing, and updating alert preferences as well as inputting the stock ticker, number of candles, and RSI threshold.  Tab2 contains the functionality for displaying the chart.
-
 
 ## Firebase
 Our database is NoSQL with an alerts collection and documents storing the user id.  From each user id we store the alertsID for each alert preference created as well as the alert time details.
