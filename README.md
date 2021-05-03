@@ -1,11 +1,4 @@
 # Stock Price Tracker
-***Eric Zhan, Gabriel Dalessandro, Jason Hong, John La, Malachi Schrager***
-![Screen Shot 2021-05-02 at 9 27 08 AM](https://user-images.githubusercontent.com/40672455/116843510-065a7380-ab95-11eb-93bc-43fa7a2d9727.png)
-![Screen Shot 2021-05-02 at 9 18 13 AM](https://user-images.githubusercontent.com/40672455/116843525-11150880-ab95-11eb-9c9e-d53e57563530.png)
-![Screen Shot 2021-05-02 at 9 19 08 AM](https://user-images.githubusercontent.com/40672455/116843530-14a88f80-ab95-11eb-8155-c696d17ff279.png)
-![Screen Shot 2021-05-02 at 7 42 48 PM](https://user-images.githubusercontent.com/40672455/116843534-17a38000-ab95-11eb-8222-3d7e52dbc2b2.png)
-![Screen Shot 2021-05-02 at 7 43 04 PM](https://user-images.githubusercontent.com/40672455/116843540-1bcf9d80-ab95-11eb-86f6-4d0029258259.png)
-
 
 ## Overall Structure
 Our application is a full stack mobile application written using Node.js, the ionic angular platform, and firebase.  By using the ionic framework, the app can be ran on both Android and iOS.
@@ -65,14 +58,27 @@ There are unit tests for the back end functionality in the test directory: Backe
 ## Frontend
 Within the source/app directory we have the tab angular components.  The Tab1 angular component contains the main page and functionality for adding, removing, and updating alert preferences as well as inputting the stock ticker, number of candles, and RSI threshold.  Tab2 contains the functionality for displaying the chart.
 
+![Screen Shot 2021-05-02 at 9 18 13 AM](https://user-images.githubusercontent.com/40672455/116843525-11150880-ab95-11eb-9c9e-d53e57563530.png)
+
 ## Firebase
 Our database is NoSQL with an alerts collection and documents storing the user id.  From each user id we store the alertsID for each alert preference created as well as the alert time details.
 
+![Screen Shot 2021-05-02 at 9 27 08 AM](https://user-images.githubusercontent.com/40672455/116843510-065a7380-ab95-11eb-93bc-43fa7a2d9727.png)
+
+![Screen Shot 2021-05-02 at 9 19 08 AM](https://user-images.githubusercontent.com/40672455/116843530-14a88f80-ab95-11eb-8155-c696d17ff279.png)
+
 ## Chart
 After gathering the data from the backend, we display a chart based on user inputs as follows: 
+
+![Screen Shot 2021-05-02 at 7 42 48 PM](https://user-images.githubusercontent.com/40672455/116843534-17a38000-ab95-11eb-8222-3d7e52dbc2b2.png)
+![Screen Shot 2021-05-02 at 7 43 04 PM](https://user-images.githubusercontent.com/40672455/116843540-1bcf9d80-ab95-11eb-86f6-4d0029258259.png)
+
 
 ## App Deployment
 In the backend folder, start up the server by running node index.js.  In the frontend folder, start up ionic by running ionic serve.  This should open up the ionic application locally in a browser.  Now you have the application up and running!
 
 ## Overall Process
 We used github as our source control that allowed the members to work simultaneously on the project.  We had different branches for the different functionalities of the project.  We also integrated a code review tool, Reviewable, which allowed our Stakeholder to comment on our code and get back to us with recommendations.
+
+***By Eric Zhan, Gabriel Dalessandro, Jason Hong, John La, Malachi Schrager***
+
